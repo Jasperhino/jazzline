@@ -65,7 +65,12 @@ function useData(data) {
     d3.extent(data, (d) => d.tempo)
   );
 
-  const n_timebins = 200;
+  console.log(
+    "year extent",
+    d3.extent(data, (d) => d.year)
+  );
+
+  const n_timebins = 100;
   const time_bin = d3
     .bin()
     .value((d) => d.year)
@@ -77,62 +82,37 @@ function useData(data) {
     d.sort((a, b) => a[selectedCategory] - b[selectedCategory]);
     return d;
   });
+  console.log("time_bins_sorted", time_bins_sorted);
 
-  var histogram = d3
-    .histogram()
-    .value((d) => d[selectedCategory])
-    .domain(yScale.domain())
-    .thresholds(70);
+  // var histogram = d3
+  //   .histogram()
+  //   .value((d) => d[selectedCategory])
+  //   .domain(yScale.domain())
+  //   .thresholds(70);
 
-  const histograms = time_bins.map((d) => histogram(d));
+  // const histograms = time_bins.map((d) => histogram(d));
 
-  //max length of one bin in all the histograms
-  const max_length = d3.max(histograms, (d) => d3.max(d.map((d) => d.length)));
+  // //max length of one bin in all the histograms
+  // const max_length = d3.max(histograms, (d) => d3.max(d.map((d) => d.length)));
 
-  var xNum = d3.scaleLinear().range([0, 5]).domain([-max_length, max_length]);
-
-  console.log("max_length", max_length);
-  console.log("histograms", histograms);
+  // console.log("max_length", max_length);
+  // console.log("histograms", histograms);
 
   // Checkboxes
   // Still no updating the y axis, only the label in the tooltip
-  //////
-  d3.selectAll("[value=tempo]").on("change", function () {
-    selectedCategory = "tempo";
-    console.log("selectedCategory: " + selectedCategory);
+  d3.selectAll("[name=features]").on("change", function () {
+    console.log("selectedCategory:", this.value);
   });
-
-  d3.selectAll("[value=valance]").on("change", function () {
-    selectedCategory = "valance";
-    console.log("selectedCategory: " + selectedCategory);
-  });
-
-  d3.selectAll("[value=energy]").on("change", function () {
-    selectedCategory = "energy";
-    console.log("selectedCategory: " + selectedCategory);
-  });
-
-  d3.selectAll("[value=acousticness]").on("change", function () {
-    selectedCategory = "acousticness";
-    console.log("selectedCategory: " + selectedCategory);
-  });
-  ////////
-
-  //// console.log("bins", time_bins);
-
-  //// console.log("bins_sorted", time_bins_sorted);
-
-  //// console.log(data);
 
   const svg = d3
-    .select("div#main-x-axis")
+    .select("body")
     .append("svg")
     .attr("width", width)
     .attr("height", height)
     .attr("viewBox", [0, 0, width, height]);
 
   const tooltip = d3
-    .select("div#main-x-axis")
+    .select("body")
     .append("div")
     .style("position", "absolute")
     .style("display", "none")
@@ -177,14 +157,16 @@ function useData(data) {
   tooltip.append("p").attr("id", "tt-activecat").text("Selected Category");
   tooltip.append("p").attr("id", "tt-songpos").text("Song position"); // this can be deleted later
 
-  const wilkinsons = svg
-    .selectAll(null)
+  const year_bins = svg
+    .selectAll("year_bins")
     .data(time_bins_sorted)
     .join("g")
-    .attr("transform", (d) => `translate(${timeScale(d.x0)}, ${height})`);
+    .attr("transform", (d) => {
+      return `translate(${timeScale(d.x0)}, 0)`;
+    });
 
-  const columns_per_bin = 4;
-  const dots = wilkinsons
+  const columns_per_bin = 3;
+  const dots = year_bins
     .selectAll("dot")
     .data((d) => {
       const radius = (timeScale(d.x1) - timeScale(d.x0)) / columns_per_bin;
@@ -204,7 +186,7 @@ function useData(data) {
     .attr("cx", (d, i) => (i % columns_per_bin) * 2 * d.radius + d.radius)
     .attr("cy", (d) => d.y)
     .attr("r", (d) => d.radius)
-
+    .attr("fill", primaryColor)
     .on("click", (e, d) => {
       selectedTrack = d;
       dots
@@ -307,18 +289,15 @@ function useData(data) {
     .attr("width", width)
     .attr("height", 50);
 
-  // Add scale to x axis
-  let escala_x = d3
-    .axisBottom()
-    .scale(timeScale)
-    .ticks(10)
-    .tickFormat(d3.format("^20"));
+  // // Add scale to x axis
+  // let escala_x = d3
+  //   .axisBottom()
+  //   .scale(timeScale)
+  //   .ticks(10)
+  //   .tickFormat(d3.format("^20"));
 
-  //Append group and insert axis
-  var x_axis = svg_time
-    .append("g")
-    .call(escala_x)
-    .attr("transform", "translate(0,20)");
+  // //Append group and insert axis
+  // var x_axis = svg_time.append("g").call(escala_x);
 
   // Timeline Range Slider
   // adapted from: https://bl.ocks.org/johnwalley/e1d256b81e51da68f7feb632a53c3518
@@ -334,24 +313,24 @@ function useData(data) {
     .fill("red")
     .handle(d3.symbol().type(d3.symbolCircle).size(200)())
     .on("onchange", (val) => {
-      d3.select("p#value-range").text(val.map(d3.format("^20")).join("-"));
-      timeScale.domain(val.map(d3.format("^20")));
-      let newscale = d3.axisBottom(timeScale).tickFormat(d3.format("^20"));
-      x_axis.transition().duration(1000).call(newscale);
-      //wilkinsons.attr("transform", (d) => `translate(${newscale(d.x0)}, ${height})`);
+      // d3.select("p#value-range").text(val.map(d3.format("^20")).join("-"));
+      // timeScale.domain(val.map(d3.format("^20")));
+      // let newscale = d3.axisBottom(timeScale).tickFormat(d3.format("^20"));
+      // x_axis.transition().duration(1000).call(newscale);
+      //year_bins.attr("transform", (d) => `translate(${newscale(d.x0)}, ${height})`);
     });
 
-  var gRange = d3
-    .select("div#slider-range")
-    .append("svg")
-    .attr("width", width)
-    .attr("height", 100)
-    .append("g")
-    .attr("transform", "translate(10,20)");
+  // var gRange = d3
+  //   .select("div#slider-range")
+  //   .append("svg")
+  //   .attr("width", width)
+  //   .attr("height", 100)
+  //   .append("g")
+  //   .attr("transform", "translate(10,20)");
 
-  gRange.call(sliderRange);
+  // gRange.call(sliderRange);
 
-  d3.select("p#value-range").text(
-    sliderRange.value().map(d3.format("^20")).join("-")
-  );
+  // d3.select("p#value-range").text(
+  //   sliderRange.value().map(d3.format("^20")).join("-")
+  // );
 }

@@ -3,6 +3,10 @@ import ast
 import pandas as pd
 import numpy as np
 
+## Todo - some years dont have songs right now, maybe we should add more artists or filter unpopular songs
+
+
+
 # %%
 a = pd.read_csv('data/artists.csv')
 # artists with over 80 popularity
