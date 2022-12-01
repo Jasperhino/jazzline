@@ -15,6 +15,20 @@ d3.csv("data/tracks_filtered_jazz.csv", (track) => {
 }).then(useData);
 
 function useData(data) {
+  data = data.map((d) => ({
+    ...d,
+    id_artists: d.id_artists
+      .slice(1, -1)
+      .split(" ")
+      .map((id) => id.slice(1, -1)),
+    artists: d.artists
+      .slice(1, -1)
+      .split(", ")
+      .map((a) => a.slice(1, -1)),
+  }));
+
+  console.log("data", data);
+
   const apiToken =
     "BQAw3EPkOOXfmC_1aw7KdEmo1LoDIKeQrkgrATgsICQBsjgyX5HJ-QFjQrxbSAUfc2KSZujnnYjLBlUvUmnjVsJNM-EsOIM0ANT4hH9-XWNlNIYC28DprptpalHLvSxjAitmcbd8Sv59UiFDl5uCfR9yNhw7RmKi660FCkhbfmI";
 
@@ -28,6 +42,7 @@ function useData(data) {
   ];
 
   const primaryColor = "#69b3a2";
+  const highlightColor = "red";
 
   let selectedCategory = "tempo";
   let selectedTrack = null;
@@ -56,22 +71,6 @@ function useData(data) {
     "tempoextend",
     d3.extent(data, (d) => d.tempo)
   );
-
-  // console.log(
-  //   data.map((d) => {
-  //     console.log("original", d.artists);
-  //     const parts = d.artists.replace("[", "").replace("]", "").split(", ");
-  //     console.log("parts", parts);
-  //     const json = parts.map((p) => {
-  //       const escaped = p.replace(/'/g, "\x27").replace(/"/g, "\x22");
-
-  //       console.log("escaped", escaped);
-  //       return JSON.parse(escaped);
-  //     });
-  //     //const json = JSON.parse(d.artists); //d.artists.replace(/'/g, '"'));
-  //     console.log("javascript", json);
-  //   })
-  // );
 
   const n_timebins = 100;
   const time_bin = d3
@@ -172,14 +171,13 @@ function useData(data) {
   const wilkinsons = svg
     .selectAll(null)
     .data(time_bins_sorted)
-    .enter()
-    .append("g")
+    .join("g")
     .attr("transform", (d) => `translate(${timeScale(d.x0)}, ${height})`);
 
   const dots = wilkinsons
     .selectAll("dot")
     .data((d) => {
-      const radius = (timeScale(d.x1) - timeScale(d.x0)) / 8;
+      const radius = (timeScale(d.x1) - timeScale(d.x0)) / 2;
       return d.map((p, i) => ({
         idx: i,
         id: p.id,
@@ -192,14 +190,32 @@ function useData(data) {
         y: -i * 2 * radius - radius,
       }));
     })
-    .enter()
-    .append("circle")
+    .join("circle")
     .attr("cx", (d, i) => 0)
     .attr("cy", (d) => d.y)
     .attr("r", (d) => d.radius)
-    .attr("fill", primaryColor)
+    .attr("fill", (d) => {
+      if (
+        d.selectedTrack &&
+        selectedTrack.id_artists.some((s) => d.id_artists.includes(s))
+      ) {
+        console.log("found match");
+        return highlightColor;
+      }
+      return primaryColor;
+    })
     .on("click", (e, d) => {
       selectedTrack = d;
+      dots.attr("fill", (d) => {
+        if (
+          selectedTrack &&
+          selectedTrack.id_artists.some((s) => d.id_artists.includes(s))
+        ) {
+          console.log("found match");
+          return highlightColor;
+        }
+        return primaryColor;
+      });
       console.log("selectedTrack", selectedTrack);
       d3.select(e.currentTarget)
         .transition()
