@@ -30,8 +30,7 @@ function useData(data) {
   console.log("data", data);
 
   const apiToken =
-    "BQAw3EPkOOXfmC_1aw7KdEmo1LoDIKeQrkgrATgsICQBsjgyX5HJ-QFjQrxbSAUfc2KSZujnnYjLBlUvUmnjVsJNM-EsOIM0ANT4hH9-XWNlNIYC28DprptpalHLvSxjAitmcbd8Sv59UiFDl5uCfR9yNhw7RmKi660FCkhbfmI";
-
+    "BQCQZA-iBMUlof2JWoKoV690g0gTKm0DdVvaq7zbgfSkTjIsN1O4LErLzIB0i2aV_CSaixxqFUv-d5BJ9egU5mGwWwsaWU5h_0NYBd7C2XS8Ssol0CCdcxELe1iJxj8tvDbr983BUd3pchhFY8oZE5VWTWZEQ7JKBfmGmVn5dvs";
   const categories = [
     "tempo",
     "duration",
@@ -162,7 +161,7 @@ function useData(data) {
     .data(time_bins_sorted)
     .join("g")
     .attr("transform", (d) => {
-      return `translate(${timeScale(d.x0)}, 0)`;
+      return `translate(${timeScale(d.x0)}, ${height})`;
     });
 
   const columns_per_bin = 3;
