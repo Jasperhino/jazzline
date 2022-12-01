@@ -1,7 +1,7 @@
 d3.csv("data/tracks_filtered_jazz.csv", (track) => {
   return d3.autoType({
     id: track.id,
-    artists: track.artists.replace("[", "").replace("]", "").replace(/'/g, ""),
+    artists: track.artists,
     id_artists: track.id_artists,
     name: track.name,
     year: track.year,
