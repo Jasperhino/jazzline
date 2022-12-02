@@ -6,11 +6,11 @@ d3.csv("data/tracks_filtered_jazz.csv", (track) => {
     name: track.name,
     year: track.year,
     tempo: track.tempo,
-    //duration: track.duration,
-    //loudness: track.loudness,
-    //energy: track.energy,
-    //valance: track.valance,
-    //acousticness: track.acousticness
+    // duration: track.duration,
+    // loudness: track.loudness,
+    // energy: track.energy,
+    // valance: track.valance,
+    // acousticness: track.acousticness,
   });
 }).then(useData);
 
@@ -31,14 +31,7 @@ function useData(data) {
 
   const apiToken =
     "BQCQZA-iBMUlof2JWoKoV690g0gTKm0DdVvaq7zbgfSkTjIsN1O4LErLzIB0i2aV_CSaixxqFUv-d5BJ9egU5mGwWwsaWU5h_0NYBd7C2XS8Ssol0CCdcxELe1iJxj8tvDbr983BUd3pchhFY8oZE5VWTWZEQ7JKBfmGmVn5dvs";
-  const categories = [
-    "tempo",
-    "duration",
-    "loudness",
-    "energy",
-    "valence",
-    "acousticness",
-  ];
+
   const primaryColor = "black";
   const highlightColor = "#69b3a2";
 
@@ -99,8 +92,9 @@ function useData(data) {
 
   // Checkboxes
   // Still no updating the y axis, only the label in the tooltip
-  d3.selectAll("[name=features]").on("change", function () {
-    console.log("selectedCategory:", this.value);
+  d3.selectAll("[name=features]").on("change", () => {
+    selectedCategory = this.value;
+    updateSelectedCategory(this.value);
   });
 
   const svg = d3
@@ -160,15 +154,15 @@ function useData(data) {
     .selectAll("year_bins")
     .data(time_bins_sorted)
     .join("g")
-    .attr("transform", (d) => {
-      return `translate(${timeScale(d.x0)}, ${height})`;
-    });
+    .attr("transform", (d) => `translate(${timeScale(d.x0)}, ${height})`);
 
-  const columns_per_bin = 3;
+  const gap = 1;
+  const columns_per_bin = 4;
   const dots = year_bins
     .selectAll("dot")
     .data((d) => {
-      const radius = (timeScale(d.x1) - timeScale(d.x0)) / columns_per_bin;
+      const radius =
+        (timeScale(d.x1) - timeScale(d.x0)) / 2 / (columns_per_bin + gap);
       return d.map((p, i) => ({
         idx: i,
         id: p.id,
@@ -182,25 +176,13 @@ function useData(data) {
       }));
     })
     .join("circle")
-    .attr("cx", (d, i) => (i % columns_per_bin) * 2 * d.radius + d.radius)
+    .attr("cx", (d, i) => (i % columns_per_bin) * 2 * d.radius + d.radius + gap)
     .attr("cy", (d) => d.y)
     .attr("r", (d) => d.radius)
     .attr("fill", primaryColor)
     .on("click", (e, d) => {
       selectedTrack = d;
-      dots
-        .attr("fill", (d) => {
-          if (
-            selectedTrack &&
-            selectedTrack.id_artists.some((s) => d.id_artists.includes(s))
-          ) {
-            return highlightColor;
-          }
-          return primaryColor;
-        })
-        .attr("r", (d) => d.radius);
-      console.log("selectedTrack", selectedTrack);
-      d3.select(e.currentTarget).attr("r", (d) => d.radius * 2);
+      updateSelectedTrack(d, d3.select(e.currentTarget));
 
       // // fill distribution plot
       // distribution_plot.selectAll("*").remove();
@@ -255,7 +237,6 @@ function useData(data) {
       tooltip.select("#tt-track").text(`${d.name}`);
       tooltip.select("#tt-artist").text(`${d.artists}`);
       tooltip.select("#tt-year").text(`${d.year}`);
-      tooltip.select("#tt-activecat").text(`${selectedCategory}: ${d.value}`);
       tooltip.select("#tt-songpos").text(`${d.idx}`);
 
       tooltip
@@ -283,20 +264,20 @@ function useData(data) {
 
   // Timeline x Axis
   var svg_time = d3
-    .select("div#main-x-axis")
+    .select("body")
     .append("svg")
     .attr("width", width)
     .attr("height", 50);
 
-  // // Add scale to x axis
-  // let escala_x = d3
-  //   .axisBottom()
-  //   .scale(timeScale)
-  //   .ticks(10)
-  //   .tickFormat(d3.format("^20"));
+  // Add scale to x axis
+  let escala_x = d3
+    .axisBottom()
+    .scale(timeScale)
+    .ticks(10)
+    .tickFormat(d3.format("^20"));
 
-  // //Append group and insert axis
-  // var x_axis = svg_time.append("g").call(escala_x);
+  //Append group and insert axis
+  var x_axis = svg_time.append("g").call(escala_x);
 
   // Timeline Range Slider
   // adapted from: https://bl.ocks.org/johnwalley/e1d256b81e51da68f7feb632a53c3518
@@ -311,7 +292,8 @@ function useData(data) {
     .default([1950, 2000])
     .fill("red")
     .handle(d3.symbol().type(d3.symbolCircle).size(200)())
-    .on("onchange", (val) => {
+    .on("onchange", (value) => {
+      updateTimeScale(value);
       // d3.select("p#value-range").text(val.map(d3.format("^20")).join("-"));
       // timeScale.domain(val.map(d3.format("^20")));
       // let newscale = d3.axisBottom(timeScale).tickFormat(d3.format("^20"));
@@ -319,17 +301,43 @@ function useData(data) {
       //year_bins.attr("transform", (d) => `translate(${newscale(d.x0)}, ${height})`);
     });
 
-  // var gRange = d3
-  //   .select("div#slider-range")
-  //   .append("svg")
-  //   .attr("width", width)
-  //   .attr("height", 100)
-  //   .append("g")
-  //   .attr("transform", "translate(10,20)");
+  const slider_svg = d3
+    .select("div#slider-range")
+    .append("svg")
+    .attr("width", width)
+    .attr("height", 100)
+    .append("g")
+    .attr("transform", "translate(10,20)");
 
-  // gRange.call(sliderRange);
+  slider_svg.call(sliderRange);
 
-  // d3.select("p#value-range").text(
-  //   sliderRange.value().map(d3.format("^20")).join("-")
-  // );
+  d3.select("p#value-range").text(
+    sliderRange.value().map(d3.format("^20")).join("-")
+  );
+
+  function updateSelectedCategory(selectedCategory) {
+    console.log("selectedCategory:", selectedCategory);
+    tooltip.select("#tt-activecat").text(`${selectedCategory}: ${d.value}`);
+  }
+
+  function updateSelectedTrack(selectedTrack, target) {
+    console.log("selectedTrack", selectedTrack);
+
+    dots
+      .attr("fill", (d) => {
+        if (
+          selectedTrack &&
+          selectedTrack.id_artists.some((s) => d.id_artists.includes(s))
+        ) {
+          return highlightColor;
+        }
+        return primaryColor;
+      })
+      .attr("r", (d) => d.radius);
+    target.attr("r", (d) => d.radius * 2);
+  }
+
+  function updateTimeScale(value) {
+    console.log("update time scale", value);
+  }
 }
