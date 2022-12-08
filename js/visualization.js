@@ -30,7 +30,7 @@ function useData(data) {
   console.log("data", data);
 
   const apiToken =
-    "BQAhAKxt5ECql2razUCdiaDjxMRbTBSvoIP7Kv7gGyWQc84a1AH84bGICd-QyZfJzfUP578x2kSnM5gcFWDVOn1HVfDBs_Wx5tCcurnzFRTsmVg6rY3F5FHUBbbj9l5tU_sUEJSiNiCU15BzyoBQgVyaw6Y5Il0PtnVSYz5GNkqtpHb2L9e5Rk1xggiz7RY";
+    "BQCy05lRXshl9VpyPH9BFEgcspBHG2E0dj__OsoqYKTGiG297IwM7ajVmb7Gbgw4s2_htgmd02LenOS9fcmloBT9u";
 
   const primaryColor = "#36312D";
   const highlightColor = "#FCA262";
@@ -40,8 +40,9 @@ function useData(data) {
   let selectedCategory = "tempo";
   let selectedTrack = null;
 
-  const width = scale($(window).scrollTop(), 0, 4000, window.innerHeight * 2, 4000);
-  const height = window.innerHeight - 40;
+  //const width = scale($(window).scrollTop(0), 0, 4000, window.innerWidth - 60, 4000);
+  const width =  window.innerWidth * 2;
+  const height = window.innerHeight;
 
   const timeScale = d3
     .scaleLinear()
@@ -76,6 +77,7 @@ function useData(data) {
     d.sort((a, b) => a[selectedCategory] - b[selectedCategory]);
     return d;
   });
+
   console.log("time_bins_sorted", time_bins_sorted);
 
   // var histogram = d3
@@ -95,11 +97,6 @@ function useData(data) {
 
 
   // Checkboxes
-  // Still no updating the y axis, only the label in the tooltip
-  d3.selectAll("[name=features]").on("change", () => {
-    selectedCategory = this.value;
-    updateSelectedCategory(this.value);
-  });
 
   const svg = d3
     .select("body")
@@ -109,10 +106,9 @@ function useData(data) {
     .attr("height", height)
     .attr("id", "viz")
     .attr("viewBox", [0, 0, width, height])
-    .attr("transform", "translate(20, -40)");
+    .attr("transform", "translate(20, 0)");
 
   const scrollcontainer = d3
-  .select("body")
   .select("#scrollable")
   .on("scroll", console.log("scrolllll"));
 
@@ -142,7 +138,7 @@ function useData(data) {
       "src",
       "https://github.com/holtzy/D3-graph-gallery/blob/master/img/section/ArcSmal.png?raw=true"
     )
-    .attr("width", 100)
+    .attr("width", 200)
     .attr("height", 100);
 
   const tooltip_audio = tooltip
@@ -163,11 +159,37 @@ function useData(data) {
   tooltip.append("p").attr("id", "tt-activecat").text("Selected Category");
   // tooltip.append("p").attr("id", "tt-songpos").text("Song position"); // this can be deleted later
 
-  const year_bins = svg
+  // Timeline x Axis
+  var svg_time = d3
+    .select("#viz")
+    .append("g")
+    .attr("width", width)
+    .attr("height", 100);
+
+  // Add scale to x axis
+  let escala_x = d3
+    .axisBottom()
+    .scale(timeScale)
+    .ticks(25)
+    .tickFormat(d3.format("^20"));
+
+  //Append group and insert axis
+  var x_axis = svg_time
+    .append("g")
+    .call(escala_x)
+    .attr("class", "tick")
+    .attr("transform", "translate(0, " + (height - 40) + ")");
+
+  //Group all bins so they can be reordered
+  var data_g = d3.select("#viz")
+    .append("g")
+    .attr("id", "data_group");
+
+  const year_bins = data_g
     .selectAll("year_bins")
     .data(time_bins_sorted)
     .join("g")
-    .attr("transform", (d) => `translate(${timeScale(d.x0)}, ${height})`);
+    .attr("transform", (d) => `translate(${timeScale(d.x0)}, ${height - 41})`);
 
   const gap = 0.5;
   const columns_per_bin = 7;
@@ -276,32 +298,22 @@ function useData(data) {
         );
     });
 
-  // Timeline x Axis
-  var svg_time = d3
-    .select("#viz")
-    .append("svg")
-    .attr("width", width)
-    .attr("height", 100);
 
-  // Add scale to x axis
-  let escala_x = d3
-    .axisBottom()
-    .scale(timeScale)
-    .ticks(25)
-    .tickFormat(d3.format("^20"));
+  window.updateSelectedCategory = function(selectedCategory) {
 
-  //Append group and insert axis
-  var x_axis = svg_time
-    .append("g")
-    .call(escala_x)
-    .attr("class", "tick")
-    .attr("transform", "translate(0," + height - 40 + ")");
+    const time_bins_sorted = time_bins.map((d) => {
+      d.sort((a, b) => a[selectedCategory] - b[selectedCategory]);
+      return d;
+    });
 
-  function updateSelectedCategory(selectedCategory) {
+    //document.getElementById("data_group").remove();
+    
+
     console.log("selectedCategory:", selectedCategory);
     tooltip
       .select("#tt-activecat")
-      .text(`${selectedCategory}: ${d.value}`);
+      .text(selectedCategory);
+
   }
 
   function updateSelectedTrack(selectedTrack, target) {
@@ -325,9 +337,12 @@ function useData(data) {
   }
 
   function updateScaleWidth() {
-    width = scale($(window).scrollTop(), 0, 4000, window.innerHeight * 2, 4000);
+    width = scale($(window).scrollTop(), 0, 4000, window.innerWidth, 4000);
     return width;
   }
   
+  var radios = document.querySelectorAll('input[type=radio][name="features"]');
+  radios.forEach(radio => radio.addEventListener('change', () => updateSelectedCategory(radio.value)));
 
 }
+
