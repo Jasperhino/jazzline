@@ -1,8 +1,151 @@
 
-body {
-    font-family: 'Poppins', sans-serif;
+:root {
+    --bg-color: #E6E8E6;
+    --text-color: #36312D;
+    --primary-color: #4F9D69;
+    --secundary-color: #FCA262;
+
 }
 
-/* h1, h2, h3 h4, h5 {
-    margin-top: 0em;
-} */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Crimson Pro', serif;
+    background-color: var(--bg-color);
+    /* overflow-y: hidden; */
+    color: var(--text-color);
+}
+
+#fixed-container {
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow: scroll;
+}
+
+#scrollable {
+    width: 100%;
+    height: 100%
+}
+
+#viz { /*id of the viz */
+
+}
+
+h1, h2, h3 h4, h5 {
+    margin: 0;
+}
+
+#col-left {
+    margin: 30px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.btn-group {
+    margin-bottom: 150px;
+
+}
+
+.btn {
+    font-size: 1.3em;
+    display: flex;
+    flex-direction: column;
+}
+
+.cb {
+
+
+}
+
+
+/* X axis */
+.tick {
+    font-size: 1em;
+}
+
+
+/* Tooltip */
+#tt-cat {
+
+}
+
+#tt-year {
+
+}
+
+
+#tt-activecat {
+
+}
+
+
+/* Scroll bar */
+
+  /* width */
+::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: rgb(255, 255, 255); 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; 
+    border: 5px solid var(--bg-color);
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
+
+
+
+/* Radio buttons */
+
+  input[type="radio"] {
+    background-color: transparent;
+    border: .0625em solid var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+    font: inherit;
+    height: 1em;
+    outline: none;
+    width: 1em;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+  }
+
+  input[type="radio"]:checked {
+      background-color: var(--primary-color);
+      box-shadow: inset 0 0 0 .1875em var(--bg-color);
+      -webkit-transition: background .15s, box-shadow .1s; 
+      transition: background .15s, box-shadow .1s; 
+    }
+  
+  
+  strong {
+    display: block;
+    font-size: .5em;
+    line-height: 3em;
+  }
+  
+
+
+  /* Pop Up window */
+
+  #popup {
+    width: 500px;
+    height: 500px;
+    display: none;
+  }

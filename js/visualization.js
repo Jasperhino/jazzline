@@ -23,23 +23,30 @@ function useData(data) {
       .map((id) => id.slice(1, -1)),
     artists: d.artists
       .slice(1, -1)
-      .split(", ")
+      .split(",   ")
       .map((a) => a.slice(1, -1)),
   }));
 
   console.log("data", data);
 
   const apiToken =
-    "BQD9Z21VeRCbwUZnHIxGXr6rste98B9O5NqIU5X25YY4ERvCdqG6bYTfzkEwnXsQ8gbAG6KVkYbj6kWt9bKukjhItUtldVG2C1xeIHQAstgPB7PriZyf2VtgYG8O9-EBB3-hgogvY3LATTrjGQcl18rbC3fwtkbpgMgPlCd1HlY";
+    "BQAhAKxt5ECql2razUCdiaDjxMRbTBSvoIP7Kv7gGyWQc84a1AH84bGICd-QyZfJzfUP578x2kSnM5gcFWDVOn1HVfDBs_Wx5tCcurnzFRTsmVg6rY3F5FHUBbbj9l5tU_sUEJSiNiCU15BzyoBQgVyaw6Y5Il0PtnVSYz5GNkqtpHb2L9e5Rk1xggiz7RY";
 
-  const primaryColor = "black";
-  const highlightColor = "#69b3a2";
+  const primaryColor = "#36312D";
+  const highlightColor = "#FCA262";
+  const selectedColor = "#4F9D69";
 
   let selectedCategory = "tempo";
   let selectedTrack = null;
 
-  const width = 1800;
-  const height = 900;
+  const width = scale(
+    $(window).scrollTop(),
+    0,
+    4000,
+    window.innerHeight * 2,
+    4000
+  );
+  const height = window.innerHeight - 40;
 
   const timeScale = d3
     .scaleLinear()
@@ -74,26 +81,32 @@ function useData(data) {
   // console.log("max_length", max_length);
   // console.log("histograms", histograms);
 
-  // Radio  Buttons
-  d3.selectAll("input[name=features]").on("change", (e, d) => {
-    console.log(e);
-    console.log(d);
-    console.log(this);
+  // Checkboxes
+  // Still no updating the y axis, only the label in the tooltip
+  d3.selectAll("[name=features]").on("change", () => {
     selectedCategory = this.value;
     updateSelectedCategory(selectedCategory);
   });
 
   const svg = d3
     .select("body")
+    .select("#scrollable")
     .append("svg")
     .attr("width", width)
     .attr("height", height)
-    .attr("viewBox", [0, 0, width, height]);
+    .attr("id", "viz")
+    .attr("viewBox", [0, 0, width, height])
+    .attr("transform", "translate(20, -40)");
+
+  const scrollcontainer = d3
+    .select("body")
+    .select("#scrollable")
+    .on("scroll", console.log("scrolllll"));
 
   const tooltip = d3
     .select("body")
     .append("div")
-    .style("position", "absolute")
+    .style("position", "fixed")
     .style("display", "none")
     .style("background-color", "white")
     .style("border", "solid")
@@ -128,7 +141,7 @@ function useData(data) {
     .append("svg")
     .attr("width", 200)
     .attr("height", 100)
-    .style("background-color", "red");
+    .style("background-color", selectedColor);
 
   tooltip.append("h3").attr("id", "tt-track").text("Title");
   tooltip.append("h4").attr("id", "tt-artist").text("Artist");
@@ -143,8 +156,8 @@ function useData(data) {
     .join("g")
     .attr("transform", (d) => `translate(${timeScale(d.x0)}, ${height})`);
 
-  const gap = 1;
-  const columns_per_bin = 4;
+  const gap = 0.5;
+  const columns_per_bin = 7;
   const dots = year_bins
     .selectAll("dot")
     .data((d) => {
@@ -216,9 +229,9 @@ function useData(data) {
         });
 
       tooltip
-        .style("left", e.offsetX + 30 + "px")
-        .style("top", e.offsetY + "px")
-        .style("max-width", 240) // tooltip max width
+        .style("right", "50")
+        .style("top", "30")
+        .style("width", 240) // tooltip max width
         .style("display", "none");
 
       tooltip.select("#tt-track").text(`${d.name}`);
@@ -228,20 +241,18 @@ function useData(data) {
       tooltip.select("#tt-value").text(`${d.value}`);
       tooltip.select("#tt-songpos").text(`${d.idx}`);
 
-      tooltip
-        .transition()
-        .duration(200)
-        //.style("opacity", 1)
-        .style("display", "block");
+      tooltip.transition().duration(200).style("display", "block");
     })
     .on("mouseover", (e, d) => {
       d3.select(e.currentTarget)
         .transition()
         .duration("200")
-        .attr("r", d.radius * 2);
+        .attr("r", d.radius * 2.5);
     })
 
     .on("mouseout", (e, d) => {
+      //console.log(e.currentTarget);
+
       d3.select(e.currentTarget)
         .transition()
         .duration("200")
@@ -253,56 +264,24 @@ function useData(data) {
 
   // Timeline x Axis
   var svg_time = d3
-    .select("body")
+    .select("#viz")
     .append("svg")
     .attr("width", width)
-    .attr("height", 50);
+    .attr("height", 100);
 
   // Add scale to x axis
   let escala_x = d3
     .axisBottom()
     .scale(timeScale)
-    .ticks(10)
+    .ticks(25)
     .tickFormat(d3.format("^20"));
 
   //Append group and insert axis
-  var x_axis = svg_time.append("g").call(escala_x);
-
-  // Timeline Range Slider
-  // adapted from: https://bl.ocks.org/johnwalley/e1d256b81e51da68f7feb632a53c3518
-  var sliderRange = d3
-    .sliderBottom()
-    .min(d3.min(data))
-    .max(d3.max(data))
-    .width(width - 30)
-    .tickFormat(d3.format("^20")) // https://observablehq.com/@d3/d3-format
-    .ticks(10)
-    .step(1.0)
-    .default([1950, 2000])
-    .fill("red")
-    .handle(d3.symbol().type(d3.symbolCircle).size(200)())
-    .on("onchange", (value) => {
-      updateTimeScale(value);
-      // d3.select("p#value-range").text(val.map(d3.format("^20")).join("-"));
-      // timeScale.domain(val.map(d3.format("^20")));
-      // let newscale = d3.axisBottom(timeScale).tickFormat(d3.format("^20"));
-      // x_axis.transition().duration(1000).call(newscale);
-      //year_bins.attr("transform", (d) => `translate(${newscale(d.x0)}, ${height})`);
-    });
-
-  const slider_svg = d3
-    .select("div#slider-range")
-    .append("svg")
-    .attr("width", width)
-    .attr("height", 100)
+  var x_axis = svg_time
     .append("g")
-    .attr("transform", "translate(10,20)");
-
-  slider_svg.call(sliderRange);
-
-  d3.select("p#value-range").text(
-    sliderRange.value().map(d3.format("^20")).join("-")
-  );
+    .call(escala_x)
+    .attr("class", "tick")
+    .attr("transform", "translate(0," + height - 40 + ")");
 
   function updateSelectedCategory(selectedCategory) {
     console.log("selectedCategory:", selectedCategory);
@@ -323,10 +302,12 @@ function useData(data) {
         return primaryColor;
       })
       .attr("r", (d) => d.radius);
-    target.attr("r", (d) => d.radius * 2);
+
+    target.attr("r", (d) => d.radius * 2).attr("fill", selectedColor);
   }
 
-  function updateTimeScale(value) {
-    console.log("update time scale", value);
+  function updateScaleWidth() {
+    width = scale($(window).scrollTop(), 0, 4000, window.innerHeight * 2, 4000);
+    return width;
   }
 }

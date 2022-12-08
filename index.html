@@ -11,26 +11,46 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <!-- Font -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://unpkg.com/d3-simple-slider"></script>
+    <!-- <script src="https://unpkg.com/d3-simple-slider"></script> -->
+    <script type="text/javascript" src="scroll.js"></script>
     <script type="module" src="js/visualization.js"></script>
+
   </head>
 
   <body>
+
+    <div id = "popup">
+      This is the popup window
+    </div>
+
+    <div id="scroll-update" style="height: 4000px">
+      <!-- Scroll down! -->
+      <!-- The height of this container is what allows the timeline scroll  -->
+    </div>
+    <div id="fixed-container">
+      <div id="scrollable">
+      <!-- viz goes inside here -->
+      </div>
+    </div>
+    <div id="col-left">
+    <div>
+        <h1><i> Jazzline</i></h1>
+        <h2>Jazz songs from the last century</h2>
+    </div>
     <form id="form" class="btn-group btn-group-toggle" data-toggle="buttons">
-      <label class="btn btn-secondary active">
+    <label class="btn btn-secondary active">
         <input
           class="cb"
           type="radio"
           name="features"
           value="tempo"
           checked
-        />Tempo<br />
+        /><p class = "btn-label">Tempo</p><br />
       </label>
       <label class="btn btn-secondary">
         <input
@@ -38,7 +58,7 @@
           type="radio"
           name="features"
           value="valance"
-        />Valence<br />
+        /><p class = "btn-label">Valence</p><br />
       </label>
       <label class="btn btn-secondary active">
         <input
@@ -46,7 +66,7 @@
           type="radio"
           name="features"
           value="energy"
-        />Energy<br />
+        /><p class = "btn-label">Energy</p><br />
       </label>
       <label class="btn btn-secondary">
         <input
@@ -54,8 +74,13 @@
           type="radio"
           name="features"
           value="acousticness"
-        />Acousticness<br />
+        /><p class = "btn-label">Acousticness</p><br />
       </label>
     </form>
+    <div><!-- dont delete this --></div> 
+  </div>
+    <script type="text/javascript" src="scroll.js"></script>
+
   </body>
+
 </html>
