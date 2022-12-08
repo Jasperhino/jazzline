@@ -6,11 +6,11 @@ d3.csv("data/tracks_filtered_jazz.csv", (track) => {
     name: track.name,
     year: track.year,
     tempo: track.tempo,
-    // duration: track.duration,
-    // loudness: track.loudness,
-    // energy: track.energy,
-    // valance: track.valance,
-    // acousticness: track.acousticness,
+    duration: track.duration_ms,
+    loudness: track.loudness,
+    energy: track.energy,
+    //valance: track.valance,
+    acousticness: track.acousticness,
   });
 }).then(useData);
 
@@ -30,7 +30,7 @@ function useData(data) {
   console.log("data", data);
 
   const apiToken =
-    "BQCQZA-iBMUlof2JWoKoV690g0gTKm0DdVvaq7zbgfSkTjIsN1O4LErLzIB0i2aV_CSaixxqFUv-d5BJ9egU5mGwWwsaWU5h_0NYBd7C2XS8Ssol0CCdcxELe1iJxj8tvDbr983BUd3pchhFY8oZE5VWTWZEQ7JKBfmGmVn5dvs";
+    "BQD9Z21VeRCbwUZnHIxGXr6rste98B9O5NqIU5X25YY4ERvCdqG6bYTfzkEwnXsQ8gbAG6KVkYbj6kWt9bKukjhItUtldVG2C1xeIHQAstgPB7PriZyf2VtgYG8O9-EBB3-hgogvY3LATTrjGQcl18rbC3fwtkbpgMgPlCd1HlY";
 
   const primaryColor = "black";
   const highlightColor = "#69b3a2";
@@ -45,22 +45,6 @@ function useData(data) {
     .scaleLinear()
     .domain(d3.extent(data, (d) => d.year))
     .range([0, width]);
-
-  const yScale = d3
-    .scaleLinear()
-    .domain(d3.extent(data, (d) => d[selectedCategory]))
-    .nice()
-    .range([0, height]);
-
-  console.log(
-    "tempoextend",
-    d3.extent(data, (d) => d.tempo)
-  );
-
-  console.log(
-    "year extent",
-    d3.extent(data, (d) => d.year)
-  );
 
   const n_timebins = 100;
   const time_bin = d3
@@ -90,11 +74,13 @@ function useData(data) {
   // console.log("max_length", max_length);
   // console.log("histograms", histograms);
 
-  // Checkboxes
-  // Still no updating the y axis, only the label in the tooltip
-  d3.selectAll("[name=features]").on("change", () => {
+  // Radio  Buttons
+  d3.selectAll("input[name=features]").on("change", (e, d) => {
+    console.log(e);
+    console.log(d);
+    console.log(this);
     selectedCategory = this.value;
-    updateSelectedCategory(this.value);
+    updateSelectedCategory(selectedCategory);
   });
 
   const svg = d3
@@ -148,6 +134,7 @@ function useData(data) {
   tooltip.append("h4").attr("id", "tt-artist").text("Artist");
   tooltip.append("h4").attr("id", "tt-year").text("Year");
   tooltip.append("p").attr("id", "tt-activecat").text("Selected Category");
+  tooltip.append("p").attr("id", "tt-value").text("Value");
   tooltip.append("p").attr("id", "tt-songpos").text("Song position"); // this can be deleted later
 
   const year_bins = svg
@@ -237,6 +224,8 @@ function useData(data) {
       tooltip.select("#tt-track").text(`${d.name}`);
       tooltip.select("#tt-artist").text(`${d.artists}`);
       tooltip.select("#tt-year").text(`${d.year}`);
+      tooltip.select("#tt-activecat").text(`${selectedCategory}`);
+      tooltip.select("#tt-value").text(`${d.value}`);
       tooltip.select("#tt-songpos").text(`${d.idx}`);
 
       tooltip
