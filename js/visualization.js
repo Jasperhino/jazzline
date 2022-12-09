@@ -47,6 +47,8 @@ function useData(data) {
 
   //const width = scale($(window).scrollTop(0), 0, 4000, window.innerWidth - 60, 4000);
   const width = 4000;
+  const gap = 0.5;
+  const columns_per_bin = 8;
   const height = window.innerHeight;
 
   const timeScale = d3
@@ -70,21 +72,10 @@ function useData(data) {
   });
   console.log("tracks_by_year", tracks_by_year);
 
-  // var histogram = d3
-  //   .histogram()
-  //   .value((d) => d[selectedCategory])
-  //   .domain(yScale.domain())
-  //   .thresholds(70);
-
-  // const histograms = time_bins.map((d) => histogram(d));
-
-  // //max length of one bin in all the histograms
-  // const max_length = d3.max(histograms, (d) => d3.max(d.map((d) => d.length)));
-
-  // console.log("max_length", max_length);
-  // console.log("histograms", histograms);
-
-  // Checkboxes
+  d3.selectAll("[name=features]").on("change", (e) => {
+    selectedCategory = e.target.value;
+    updateSelectedCategory(selectedCategory);
+  });
 
   const svg = d3
     .select("body")
@@ -94,7 +85,7 @@ function useData(data) {
     .attr("height", height)
     .attr("id", "viz")
     .attr("viewBox", [0, 0, width, height])
-    .attr("transform", "translate(20, 0)");
+    .attr("transform", `translate(20, 0)`);
 
   // const scrollcontainer = d3
   // .select("#scrollable")
@@ -105,21 +96,8 @@ function useData(data) {
     .append("div")
     .attr("class", "track-info")
     .style("position", "fixed")
-    //.attr("width", "300px")
     .style("display", "none");
-  // .style("background-color", "white")
-  // .style("border", "solid")
-  // .style("border-width", "1px")
-  // .style("border-radius", "5px")
-  // .style("padding", "10px");
-  // .on("mouseout", (e) => {
-  //   d3.select(e.currentTarget)
-  //     .style("z-index", 0)
-  //     .transition()
-  //     .duration(200)
-  //     .style("opacity", 0)
-  //     .style("visibility", "hidden");
-  // });
+
   const tooltip_g0 = tooltip.append("div").attr("id", "col1");
 
   tooltip_g0
@@ -168,120 +146,114 @@ function useData(data) {
     .append("g")
     .call(escala_x)
     .attr("class", "tick")
-    .attr("transform", "translate(0, " + (height - 50) + ")");
+    .attr("transform", `translate(0, ${height - 50})`);
 
   //Group all bins so they can be reordered
   var data_g = d3.select("#viz").append("g").attr("id", "data_group");
 
-  const year_bins = data_g
-    .selectAll("year_bins")
-    .data(tracks_by_year)
-    .join("g")
-    .attr(
-      "transform",
-      (d) => `translate(${timeScale(d.year)}, ${height - 51})`
-    );
+  let dots;
 
-  const gap = 0.5;
-  const columns_per_bin = 8;
-  const dots = year_bins
-    .selectAll("dot")
-    .data((d) => {
-      const radius = (columns_per_bin + gap) / 2;
-      return d.tracks.map((p, i) => ({
-        idx: i,
-        id: p.id,
-        name: p.name,
-        value: p[selectedCategory],
-        radius,
-        artists: p.artists,
-        year: p.year,
-        id_artists: p.id_artists,
-        y: -Math.floor(i / columns_per_bin) * 2 * radius - radius,
-      }));
-    })
-    .join("circle")
-    .attr("cx", (d) => d.x)
-    .attr("cy", (d) => d.y)
-    .attr("r", (d) => d.radius - 0.1)
-    .attr("fill", primaryColor)
-    .on("click", (e, d) => {
-      selectedTrack = d;
-      updateSelectedTrack(d, d3.select(e.currentTarget));
+  function updateSelectedCategory(selectedCategory) {
+    const year_bins = data_g
+      .selectAll("year_bins")
+      .data(tracks_by_year, (d) => d.year)
+      .join("g")
+      .attr(
+        "transform",
+        (d) => `translate(${timeScale(d.year)}, ${height - 51})`
+      );
 
-      // // fill distribution plot
-      // distribution_plot.selectAll("*").remove();
-      // const histogram = d3
-      //   .histogram()
-      //   .value((d) => d[selectedCategory])
-      //   .domain(yScale.domain())
-      //   .thresholds(70);
-      // const histogram_data = histogram(data);
-      // const xScale = d3
-      //   .scaleLinear()
-      //   .domain(d3.extent(histogram_data, (d) => d.x0))
-      //   .range([0, 200]);
-      // const yScale = d3
-      //   .scaleLinear()
-      //   .domain([0, d3.max(histogram_data, (d) => d.length)])
-      //   .range([100, 0]);
-      // const area = d3
-      //   .area()
-      //   .x((d) => xScale(d.x0))
-      //   .y0(100)
-      //   .y1((d) => yScale(d.length));
-      // distribution_plot
-      //   .append("path")
-      //   .datum(histogram_data)
-      //   .attr("fill", "#69b3a2")
-      //   .attr("d", area);
-
-      //retrive cover image using Spotify API
-      const url = `https://api.spotify.com/v1/tracks/${d.id}`;
-      fetch(url, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${apiToken}`,
-        },
+    dots = year_bins
+      .selectAll("dot")
+      .data((d) => {
+        const radius = (columns_per_bin + gap) / 2;
+        return d.tracks
+          .map((p, i) => ({
+            idx: i,
+            id: p.id,
+            name: p.name,
+            value: p[selectedCategory],
+            radius,
+            artists: p.artists,
+            year: p.year,
+            id_artists: p.id_artists,
+          }))
+          .sort((a, b) => a.value - b.value)
+          .map((p, i) => ({
+            ...p,
+            x: (i % columns_per_bin) * (radius * 2 + gap) + radius,
+            y: -Math.floor(i / columns_per_bin) * (radius * 2 + gap) + radius,
+          }));
       })
-        .then((response) => response.json())
-        .then((data) => {
-          const cover = data.album.images[0].url;
-          tooltip.select("img").attr("src", cover);
-          const preview = data.preview_url;
-          console.log("preview", data.preview_url);
-          tooltip_audio.attr("src", preview).attr("type", "audio/mpeg");
-        });
+      .join((enter) =>
+        enter
+          .append("circle")
+          .attr("cx", (d) => d.x)
+          .attr("cy", (d) => d.y)
+          .attr("r", (d) => d.radius)
+          .attr("fill", (d) => {
+            if (
+              selectedTrack &&
+              selectedTrack.id_artists.some((s) => d.id_artists.includes(s))
+            ) {
+              return highlightColor;
+            }
+            return primaryColor;
+          })
+          .on("click", (e, d) => {
+            selectedTrack = d;
+            updateSelectedTrack(d, d3.select(e.currentTarget));
 
-      tooltip.select("#tt-year").text(`${d.year}`);
-      tooltip.select("#tt-track").text(`${d.name}`);
-      tooltip.select("#tt-artist").text(`${d.artists}`);
-      tooltip.select("#tt-activecat").text(`${selectedCategory}: ${d.value}`);
-      tooltip.select("#tt-value").text(`${d.value}`);
-      tooltip.select("#tt-songpos").text(`${d.idx}`);
+            //retrive cover image using Spotify API
+            const url = `https://api.spotify.com/v1/tracks/${d.id}`;
+            fetch(url, {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${apiToken}`,
+              },
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                const cover = data.album.images[0].url;
+                tooltip.select("img").attr("src", cover);
+                const preview = data.preview_url;
+                console.log("preview", data.preview_url);
+                tooltip_audio.attr("src", preview).attr("type", "audio/mpeg");
+              });
 
-      tooltip.transition().duration(200).style("display", "flex");
-    })
-    .on("mouseover", (e, d) => {
-      d3.select(e.currentTarget)
-        .transition()
-        .duration("200")
-        .attr("r", d.radius * 2);
-    })
+            tooltip.select("#tt-year").text(`${d.year}`);
+            tooltip.select("#tt-track").text(`${d.name}`);
+            tooltip.select("#tt-artist").text(`${d.artists}`);
+            tooltip
+              .select("#tt-activecat")
+              .text(`${selectedCategory}: ${d.value}`);
+            tooltip.select("#tt-value").text(`${d.value}`);
+            tooltip.select("#tt-songpos").text(`${d.idx}`);
 
-    .on("mouseout", (e, d) => {
-      //console.log(e.currentTarget);
+            tooltip.transition().duration(200).style("display", "flex");
+          })
+          .on("mouseover", (e, d) => {
+            d3.select(e.currentTarget)
+              .transition()
+              .duration("200")
+              .attr("r", d.radius * 2);
+          })
 
-      d3.select(e.currentTarget)
-        .transition()
-        .duration("200")
-        .attr(
-          "r",
-          selectedTrack && d.id === selectedTrack.id
-            ? d.radius * 2
-            : d.radius - 0.1
-        );
-    });
+          .on("mouseout", (e, d) => {
+            //console.log(e.currentTarget);
+
+            d3.select(e.currentTarget)
+              .transition()
+              .duration("200")
+              .attr(
+                "r",
+                selectedTrack && d.id === selectedTrack.id
+                  ? d.radius * 2
+                  : d.radius
+              );
+          })
+      );
+  }
 
   function updateSelectedTrack(selectedTrack, target) {
     console.log("selectedTrack", selectedTrack);
@@ -295,7 +267,7 @@ function useData(data) {
         }
         return primaryColor;
       })
-      .attr("r", (d) => d.radius - 0.1);
+      .attr("r", (d) => d.radius);
 
     target.attr("r", (d) => d.radius * 2).attr("fill", selectedColor);
 
@@ -344,4 +316,6 @@ function useData(data) {
     //   .attr("fill", "#69b3a2")
     //   .attr("d", area);
   }
+
+  updateSelectedCategory("tempo");
 }
