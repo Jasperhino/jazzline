@@ -33,7 +33,7 @@ function useData(data) {
     "BQCy05lRXshl9VpyPH9BFEgcspBHG2E0dj__OsoqYKTGiG297IwM7ajVmb7Gbgw4s2_htgmd02LenOS9fcmloBT9u";
 
   const primaryColor = "#36312D";
-  const highlightColor = "#FCA262";
+  const highlightColor = "#8ace9b";
   const selectedColor = "#4F9D69";
 
   let selectedCategory = "tempo";
@@ -138,13 +138,10 @@ function useData(data) {
   const tooltip_g = tooltip
       .append("div")
       .attr("id", "2col");
-
+      tooltip_g.append("h5").attr("id", "tt-year").text("Year");
       tooltip_g.append("h3").attr("id", "tt-track").text("Title");
       tooltip_g.append("h4").attr("id", "tt-artist").text("Artist");
-      tooltip_g.append("h5").attr("id", "tt-year").text("Year");
-    
-    tooltip_g.append("h4").attr("id", "tt-link").text("Spotify Link");
-    tooltip_g.append("p").attr("id", "tt-activecat").text("Selected Category");
+      tooltip_g.append("p").attr("id", "tt-activecat").text("Selected Category");
     // tooltip_g.append("p").attr("id", "tt-value").text("Value");
     // tooltip_g.append("p").attr("id", "tt-songpos").text("Song position"); // this can be deleted later
   
@@ -263,12 +260,10 @@ function useData(data) {
       //   .style("top", "30")
       //   .style("width", 240) // tooltip max width
       //   .style("display", "none");
-
+      tooltip.select("#tt-year").text(`${d.year}`);
       tooltip.select("#tt-track").text(`${d.name}`);
       tooltip.select("#tt-artist").text(`${d.artists}`);
-      tooltip.select("#tt-year").text(`${d.year}`);
       tooltip.select("#tt-activecat").text(`${selectedCategory}: ${d.value}`);
-  
       tooltip.select("#tt-value").text(`${d.value}`);
       tooltip.select("#tt-songpos").text(`${d.idx}`);
 

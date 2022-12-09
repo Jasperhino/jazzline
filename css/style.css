@@ -3,7 +3,7 @@
     --bg-color: #E6E8E6;
     --text-color: #36312D;
     --primary-color: #4F9D69;
-    --secundary-color: #FCA262;
+    --secundary-color: #8ace9b;
 
 }
 
@@ -142,9 +142,9 @@ audio {
   right: 50px;
   top: 80px;
   display: flex;
-  background-color: rgb(218, 218, 218);
-  padding: 10px;
-
+  background-color: rgb(255 255 255 / 50%);
+  padding: 14px;
+  border-radius: 10px;
 }
 
 
