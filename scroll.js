@@ -12,10 +12,15 @@
 
 
 //  });
- 
+
 
 //  function scale (number, inMin, inMax, outMin, outMax) {
 //     return (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 // }
- 
 
+
+
+function closePopup() {
+    const popup = document.getElementById('popup-container');
+    popup.style.display = "none";
+}

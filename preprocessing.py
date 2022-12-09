@@ -30,7 +30,7 @@ filtered.head(100)
 df['year'] = df['release_date'].apply(lambda x: x.split('-')[0])
 df = df.astype({'year': 'int'})
 df.reset_index()
-# filter all songs with decade < 1960 and > 2010
+# filter all songs with decade < 1960 and > 2020 ???
 df = df[(df['year'] >= 1920)]
 df
 # %%
@@ -86,7 +86,7 @@ jazz_artists = a[a['genres'].str.contains('jazz')]
 jazz_artists.sort_values(by=['popularity'], inplace=True, ascending=False)
 # select top 0.1%
 # top_jazz_artists = a.head(int(len(jazz_artists)*(0.1)))
-# remove artists with popularity < 10
+# remove artists with popularity < 55
 top_jazz_artists = jazz_artists[jazz_artists['popularity'] > 55]
 
 top_jazz_artists

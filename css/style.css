@@ -1,9 +1,9 @@
 
 :root {
     --bg-color: #E6E8E6;
-    --text-color: #36312D;
-    --primary-color: #4F9D69;
-    --secundary-color: #8ace9b;
+    --text-color: #504943;
+    --primary-color: #57a872;
+    --secundary-color: #8ee6a4;
 
 }
 
@@ -55,6 +55,13 @@ margin-top: 5px;
 h5 {
   font-size: 1.1em;
   font-weight: 800;
+  margin: 0px;
+  margin-top: 5px;
+}
+
+p {
+  font-size: 1.1em;
+  font-weight: 500;
   margin: 0px;
   margin-top: 5px;
 }
@@ -218,8 +225,25 @@ img {
 
   /* Pop Up window */
 
+  #popup-container {
+    width: 100vh;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+
   #popup {
     width: 500px;
     height: 500px;
-    display: none;
+    background-color: white;;
+  }
+
+  #close-bttn {
+    padding: 5px;
+    stroke: var(--text-color);
+    font-size: 1.2em;
   }

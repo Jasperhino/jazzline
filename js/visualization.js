@@ -23,18 +23,18 @@ function useData(data) {
       .map((id) => id.slice(1, -1)),
     artists: d.artists
       .slice(1, -1)
-      .split(",  ")
+      .split(", ")
       .map((a) => a.slice(1, -1)),
   }));
 
-  console.log("data", data);
+  //console.log("data", data);
 
   const apiToken =
     "BQCy05lRXshl9VpyPH9BFEgcspBHG2E0dj__OsoqYKTGiG297IwM7ajVmb7Gbgw4s2_htgmd02LenOS9fcmloBT9u";
 
-  const primaryColor = "#36312D";
-  const highlightColor = "#8ace9b";
-  const selectedColor = "#4F9D69";
+  const primaryColor = "#504943";
+  const highlightColor = "#8ee6a4";
+  const selectedColor = "#57a872";
 
   let selectedCategory = "tempo";
   let selectedTrack = null;
@@ -145,11 +145,11 @@ function useData(data) {
     // tooltip_g.append("p").attr("id", "tt-value").text("Value");
     // tooltip_g.append("p").attr("id", "tt-songpos").text("Song position"); // this can be deleted later
   
-  const distribution_plot = tooltip_g
-    .append("svg")
-    .attr("width", 200)
-    .attr("height", 100)
-    .style("background-color", selectedColor);
+  // const distribution_plot = tooltip_g
+  //   .append("svg")
+  //   .attr("width", 200)
+  //   .attr("height", 100)
+  //   .style("background-color", selectedColor);
 
   // Timeline x Axis
   var svg_time = d3
@@ -262,7 +262,7 @@ function useData(data) {
       //   .style("display", "none");
       tooltip.select("#tt-year").text(`${d.year}`);
       tooltip.select("#tt-track").text(`${d.name}`);
-      tooltip.select("#tt-artist").text(`${d.artists}`);
+      tooltip.select("#tt-artist").text(`${d.artists.join(", ")}`);
       tooltip.select("#tt-activecat").text(`${selectedCategory}: ${d.value}`);
       tooltip.select("#tt-value").text(`${d.value}`);
       tooltip.select("#tt-songpos").text(`${d.idx}`);
@@ -319,7 +319,33 @@ function useData(data) {
         }
         return primaryColor;
       })
-      .attr("r", (d) => d.radius - 0.1);
+      .attr("r", (d) => {
+        if (
+          selectedTrack &&
+          selectedTrack.id_artists.some((s) => d.id_artists.includes(s))
+        ) {
+          return d.radius * 1.2;
+        }
+        return d.radius - 0.1;
+      })
+      .style("stroke-width",  (d) => {
+        if (
+          selectedTrack &&
+          selectedTrack.id_artists.some((s) => d.id_artists.includes(s))
+        ) {
+          return "0.4";
+        }
+        return "0";
+      })
+      .style("stroke",  (d) => {
+        if (
+          selectedTrack &&
+          selectedTrack.id_artists.some((s) => d.id_artists.includes(s))
+        ) {
+          return "#278a48";
+        }
+        return "red";
+      });
 
     target.attr("r", (d) => d.radius * 2).attr("fill", selectedColor);
   }

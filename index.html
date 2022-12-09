@@ -1,86 +1,79 @@
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Jazzline</title>
-    <meta name="description" content="Jazz Timeline for Visualization class" />
-    <meta name="keywords" content="Jazz Timeline, MDM, 2022" />
-    <meta name="author" content="Alexandra Oliveira, Jasper Blum" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jazzline</title>
+  <meta name="description" content="Jazz Timeline for Visualization class" />
+  <meta name="keywords" content="Jazz Timeline, MDM, 2022" />
+  <meta name="author" content="Alexandra Oliveira, Jasper Blum" />
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
-    <!-- <script src="https://unpkg.com/d3-simple-slider"></script> -->
-    <script type="text/javascript" src="scroll.js"></script>
-    
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Font -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet">
 
-  </head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+    integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" type="text/css" href="css/style.css" />
+  <script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
+  <!-- <script src="https://unpkg.com/d3-simple-slider"></script> -->
+  <script type="text/javascript" src="scroll.js"></script>
 
-  <body>
 
-    <div id = "popup">
-      This is the popup window
-    </div>
+</head>
 
-      <!-- Scroll down! -->
-    </div>
-    <div id="fixed-container">
-      <div id="scrollable">
+<body>
+  <!-- Scroll down! -->
+  </div>
+  <div id="fixed-container">
+    <div id="scrollable">
       <!-- viz goes inside here -->
-      </div>
     </div>
-    <div id="col-left">
+  </div>
+  <div id="col-left">
     <div>
-        <h1><i> Jazzline</i></h1>
-        <!-- <h2>Jazz songs from the last century</br>from the most popular artists.</h2> -->
+      <h1><i> Jazzline</i></h1>
+      <!-- <h2>Jazz songs from the last century</br>from the most popular artists.</h2> -->
     </div>
-
-    <div><!-- dont delete this --></div> 
   </div>
   <form id="form" class="btn-group btn-group-toggle" data-toggle="buttons">
     <label class="btn btn-secondary active">
-        <input
-          class="cb"
-          type="radio"
-          name="features"
-          value="tempo"
-          checked
-        /><p class = "btn-label">Tempo</p><br />
-      </label>
-      <label class="btn btn-secondary">
-        <input
-          class="cb"
-          type="radio"
-          name="features"
-          value="valance"
-        /><p class = "btn-label">Valence</p><br />
-      </label>
-      <label class="btn btn-secondary active">
-        <input
-          class="cb"
-          type="radio"
-          name="features"
-          value="energy"
-        /><p class = "btn-label">Energy</p><br />
-      </label>
-      <label class="btn btn-secondary">
-        <input
-          class="cb"
-          type="radio"
-          name="features"
-          value="acousticness"
-        /><p class = "btn-label">Acousticness</p><br />
-      </label>
-    </form>
-    <script type="module" src="js/visualization.js"></script>
-    <script type="text/javascript" src="scroll.js"></script>
+      <input class="cb" type="radio" name="features" value="tempo" checked />
+      <p class="btn-label">Tempo</p><br />
+    </label>
+    <label class="btn btn-secondary">
+      <input class="cb" type="radio" name="features" value="valance" />
+      <p class="btn-label">Valence</p><br />
+    </label>
+    <label class="btn btn-secondary active">
+      <input class="cb" type="radio" name="features" value="energy" />
+      <p class="btn-label">Energy</p><br />
+    </label>
+    <label class="btn btn-secondary">
+      <input class="cb" type="radio" name="features" value="acousticness" />
+      <p class="btn-label">Acousticness</p><br />
+    </label>
+  </form>
 
-  </body>
+  <div id="popup-container">
+    <div id="popup">
+      <h1>Jazzline</h1>
+      <h2>Jazz songs from the last century from the most popular artists.</h2> 
+      <p> Bla bla</p>
+      <div id="close-bttn" onclick="closePopup()">Got it</div>
+
+    </div>
+  </div>
+
+
+  <script type="module" src="js/visualization.js"></script>
+  <script type="text/javascript" src="scroll.js"></script>
+
+</body>
 
 </html>
