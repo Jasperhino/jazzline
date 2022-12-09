@@ -1,16 +1,16 @@
-d3.csv("data/tracks_filtered_jazz.csv", (track) => {
+d3.csv("data/tracks_filtered_jazz.csv", (t) => {
   return d3.autoType({
-    track_id: track.id,
-    artists: track.artists,
-    id_artists: track.id_artists,
-    name: track.name,
-    year: track.year,
-    tempo: track.tempo,
-    duration: track.duration_ms,
-    loudness: track.loudness,
-    energy: track.energy,
-    //valance: track.valance,
-    acousticness: track.acousticness,
+    id: t.id,
+    artists: t.artists,
+    id_artists: t.id_artists,
+    name: t.name,
+    year: t.year,
+    tempo: t.tempo,
+    duration: t.duration_ms,
+    loudness: t.loudness,
+    energy: t.energy,
+    //valance: t.valance,
+    acousticness: t.acousticness,
   });
 }).then(useData);
 
@@ -68,8 +68,8 @@ function useData(data) {
 
   let tracks_by_year = time_bins.map((d) => {
     return {
-      year: d.x0,
-      tracks: d,
+      year: d.x0.toString(),
+      tracks: Array.from(d),
     };
   });
   console.log("tracks_by_year", tracks_by_year);
@@ -166,7 +166,7 @@ function useData(data) {
 
     const year_bins = data_g
       .selectAll("year_bins")
-      .data(tracks_by_year) //, (d) => d.year)
+      .data(tracks_by_year, (d) => d.year)
       .join("g")
       .attr(
         "transform",
@@ -174,91 +174,26 @@ function useData(data) {
       );
 
     dots = year_bins
-      .selectAll("dot")
+      .selectAll("dots")
       .data(
         (d) => d.tracks,
-        (d) => d.track_id
+        (t) => {
+          return t.id;
+        }
       )
       .join(
-        (enter) =>
-          enter
-            .append("circle")
-
-            .attr("fill", (d) => {
-              if (
-                selectedTrack &&
-                selectedTrack.id_artists.some((s) => d.id_artists.includes(s))
-              ) {
-                return highlightColor;
-              }
-              return primaryColor;
-            })
-            .call((enter) =>
-              enter
-                .transition()
-                .duration(3000)
-                .attr(
-                  "cy",
-                  (d, i) =>
-                    -Math.floor(i / columns_per_bin) * (radius * 2 + gap) +
-                    radius
-                )
-            )
-            .on("click", (e, d) => {
-              selectedTrack = d;
-              updateSelectedTrack(d, d3.select(e.currentTarget));
-
-              //retrive cover image using Spotify API
-              const url = `https://api.spotify.com/v1/tracks/${d.id}`;
-              fetch(url, {
-                method: "GET",
-                headers: {
-                  Authorization: `Bearer ${apiToken}`,
-                },
-              })
-                .then((response) => response.json())
-                .then((data) => {
-                  const cover = data.album.images[0].url;
-                  tooltip.select("img").attr("src", cover);
-                  const preview = data.preview_url;
-                  console.log("preview", data.preview_url);
-                  tooltip_audio.attr("src", preview).attr("type", "audio/mpeg");
-                });
-
-              tooltip.select("#tt-year").text(`${d.year}`);
-              tooltip.select("#tt-track").text(`${d.name}`);
-              tooltip.select("#tt-artist").text(`${d.artists}`);
-              tooltip
-                .select("#tt-activecat")
-                .text(`${selectedCategory}: ${d[selectedCategory]}`);
-              tooltip.select("#tt-value").text(`${d[selectedCategory]}`);
-              tooltip.select("#tt-songpos").text(`${d.idx}`);
-
-              tooltip.transition().duration(200).style("display", "flex");
-            })
-            .on("mouseover", (e, d) => {
-              d3.select(e.currentTarget)
-                .transition()
-                .duration("200")
-                .attr("r", radius * 2);
-            })
-            .on("mouseout", (e, d) => {
-              //console.log(e.currentTarget);
-              d3.select(e.currentTarget)
-                .transition()
-                .duration("200")
-                .attr(
-                  "r",
-                  selectedTrack && d.id === selectedTrack.id
-                    ? radius * 2
-                    : radius
-                );
-            }),
-        (update) => update.attr("fill", "red")
+        (enter) => {
+          let e = enter.append("circle").attr("fill", "red");
+          console.log("e", e);
+          return e;
+        },
+        (update) => {
+          let u = update.attr("fill", "purple");
+          console.log("u", u);
+          return u;
+        }
       )
       .attr("r", (d) => radius)
-      .transition()
-      .duration(2000)
       .attr("cx", (d, i) => (i % columns_per_bin) * (radius * 2 + gap) + radius)
       .attr(
         "cy",
