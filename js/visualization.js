@@ -267,7 +267,8 @@ function useData(data) {
       tooltip.select("#tt-track").text(`${d.name}`);
       tooltip.select("#tt-artist").text(`${d.artists}`);
       tooltip.select("#tt-year").text(`${d.year}`);
-      tooltip.select("#tt-activecat").text(`${selectedCategory} + ´: ´ + ${d[selectedCategory]}`);
+      tooltip.select("#tt-activecat").text(`${selectedCategory}: ${d.value}`);
+  
       tooltip.select("#tt-value").text(`${d.value}`);
       tooltip.select("#tt-songpos").text(`${d.idx}`);
 
@@ -328,10 +329,6 @@ function useData(data) {
     target.attr("r", (d) => d.radius * 2).attr("fill", selectedColor);
   }
 
-  function updateScaleWidth() {
-    width = scale($(window).scrollTop(), 0, 4000, window.innerWidth, 4000);
-    return width;
-  }
   
   var radios = document.querySelectorAll('input[type=radio][name="features"]');
   radios.forEach(radio => radio.addEventListener('change', () => updateSelectedCategory(radio.value)));
