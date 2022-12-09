@@ -62,12 +62,13 @@ function useData(data) {
     .domain(timeScale.domain());
   const time_bins = time_bin(data);
 
-  const time_bins_sorted = time_bins.map((d) => {
-    d.sort((a, b) => a[selectedCategory] - b[selectedCategory]);
-    return d;
+  const tracks_by_year = time_bins.map((d) => {
+    return {
+      year: d.x0,
+      tracks: d,
+    };
   });
-
-  console.log("time_bins_sorted", time_bins_sorted);
+  console.log("tracks_by_year", tracks_by_year);
 
   // var histogram = d3
   //   .histogram()
@@ -174,20 +175,20 @@ function useData(data) {
 
   const year_bins = data_g
     .selectAll("year_bins")
-    .data(time_bins)
+    .data(tracks_by_year)
     .join("g")
-    .attr("transform", (d) => `translate(${timeScale(d.x0)}, ${height - 51})`);
-
-  let dots;
+    .attr(
+      "transform",
+      (d) => `translate(${timeScale(d.year)}, ${height - 51})`
+    );
 
   const gap = 0.5;
   const columns_per_bin = 8;
   const dots = year_bins
     .selectAll("dot")
     .data((d) => {
-      const radius =
-        (timeScale(d.x1) - timeScale(d.x0)) / 2 / (columns_per_bin + gap);
-      return d.map((p, i) => ({
+      const radius = (columns_per_bin + gap) / 2;
+      return d.tracks.map((p, i) => ({
         idx: i,
         id: p.id,
         name: p.name,
@@ -200,7 +201,7 @@ function useData(data) {
       }));
     })
     .join("circle")
-    .attr("cx", (d, i) => (i % columns_per_bin) * 2 * d.radius + d.radius + gap)
+    .attr("cx", (d) => d.x)
     .attr("cy", (d) => d.y)
     .attr("r", (d) => d.radius - 0.1)
     .attr("fill", primaryColor)
@@ -252,11 +253,6 @@ function useData(data) {
           tooltip_audio.attr("src", preview).attr("type", "audio/mpeg");
         });
 
-      // tooltip
-      //   .style("right", "50")
-      //   .style("top", "30")
-      //   .style("width", 240) // tooltip max width
-      //   .style("display", "none");
       tooltip.select("#tt-year").text(`${d.year}`);
       tooltip.select("#tt-track").text(`${d.name}`);
       tooltip.select("#tt-artist").text(`${d.artists}`);
@@ -287,23 +283,8 @@ function useData(data) {
         );
     });
 
-  window.updateSelectedCategory = function (selectedCategory) {
-    const time_bins_sorted = time_bins.map((d) => {
-      d.sort((a, b) => a[selectedCategory] - b[selectedCategory]);
-      return d;
-    });
-
-    //document.getElementById("data_group").remove();
-
-    // console.log("selectedCategory:", selectedCategory);
-    // tooltip
-    //   .select("#tt-activecat")
-    //   .text(selectedCategory);
-  };
-
   function updateSelectedTrack(selectedTrack, target) {
-    // console.log("selectedTrack", selectedTrack);
-
+    console.log("selectedTrack", selectedTrack);
     dots
       .attr("fill", (d) => {
         if (
@@ -363,9 +344,4 @@ function useData(data) {
     //   .attr("fill", "#69b3a2")
     //   .attr("d", area);
   }
-
-  var radios = document.querySelectorAll('input[type=radio][name="features"]');
-  radios.forEach((radio) =>
-    radio.addEventListener("change", () => updateSelectedCategory(radio.value))
-  );
 }
