@@ -18,7 +18,7 @@
     <script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
     <!-- <script src="https://unpkg.com/d3-simple-slider"></script> -->
     <script type="text/javascript" src="scroll.js"></script>
-    <script type="module" src="js/visualization.js"></script>
+    
 
   </head>
 
@@ -28,9 +28,7 @@
       This is the popup window
     </div>
 
-    <div id="scroll-update" style="height: 4000px">
       <!-- Scroll down! -->
-      <!-- The height of this container is what allows the timeline scroll  -->
     </div>
     <div id="fixed-container">
       <div id="scrollable">
@@ -40,9 +38,12 @@
     <div id="col-left">
     <div>
         <h1><i> Jazzline</i></h1>
-        <h2>Jazz songs from the last century</h2>
+        <!-- <h2>Jazz songs from the last century</br>from the most popular artists.</h2> -->
     </div>
-    <form id="form" class="btn-group btn-group-toggle" data-toggle="buttons">
+
+    <div><!-- dont delete this --></div> 
+  </div>
+  <form id="form" class="btn-group btn-group-toggle" data-toggle="buttons">
     <label class="btn btn-secondary active">
         <input
           class="cb"
@@ -77,8 +78,7 @@
         /><p class = "btn-label">Acousticness</p><br />
       </label>
     </form>
-    <div><!-- dont delete this --></div> 
-  </div>
+    <script type="module" src="js/visualization.js"></script>
     <script type="text/javascript" src="scroll.js"></script>
 
   </body>
