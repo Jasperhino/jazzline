@@ -1,6 +1,6 @@
 d3.csv("data/tracks_filtered_jazz.csv", (track) => {
   return d3.autoType({
-    id: track.id,
+    track_id: track.id,
     artists: track.artists,
     id_artists: track.id_artists,
     name: track.name,
@@ -45,10 +45,12 @@ function useData(data) {
     value: null,
   };
 
-  //const width = scale($(window).scrollTop(0), 0, 4000, window.innerWidth - 60, 4000);
-  const width = 4000;
   const gap = 0.5;
   const columns_per_bin = 8;
+  const radius = (columns_per_bin + gap) / 2 - 0.1;
+
+  //const width = scale($(window).scrollTop(0), 0, 4000, window.innerWidth - 60, 4000);
+  const width = 4000;
   const height = window.innerHeight;
 
   const timeScale = d3
@@ -64,7 +66,7 @@ function useData(data) {
     .domain(timeScale.domain());
   const time_bins = time_bin(data);
 
-  const tracks_by_year = time_bins.map((d) => {
+  let tracks_by_year = time_bins.map((d) => {
     return {
       year: d.x0,
       tracks: d,
@@ -154,9 +156,17 @@ function useData(data) {
   let dots;
 
   function updateSelectedCategory(selectedCategory) {
+    tracks_by_year.forEach((d) => {
+      d.tracks.sort((a, b) =>
+        d3.ascending(+a[selectedCategory], +b[selectedCategory])
+      );
+    });
+
+    console.log(`resorted by ${selectedCategory}`, tracks_by_year);
+
     const year_bins = data_g
       .selectAll("year_bins")
-      .data(tracks_by_year, (d) => d.year)
+      .data(tracks_by_year) //, (d) => d.year)
       .join("g")
       .attr(
         "transform",
@@ -165,93 +175,94 @@ function useData(data) {
 
     dots = year_bins
       .selectAll("dot")
-      .data((d) => {
-        const radius = (columns_per_bin + gap) / 2;
-        return d.tracks
-          .map((p, i) => ({
-            idx: i,
-            id: p.id,
-            name: p.name,
-            value: p[selectedCategory],
-            radius,
-            artists: p.artists,
-            year: p.year,
-            id_artists: p.id_artists,
-          }))
-          .sort((a, b) => a.value - b.value)
-          .map((p, i) => ({
-            ...p,
-            x: (i % columns_per_bin) * (radius * 2 + gap) + radius,
-            y: -Math.floor(i / columns_per_bin) * (radius * 2 + gap) + radius,
-          }));
-      })
-      .join((enter) =>
-        enter
-          .append("circle")
-          .attr("cx", (d) => d.x)
-          .attr("cy", (d) => d.y)
-          .attr("r", (d) => d.radius)
-          .attr("fill", (d) => {
-            if (
-              selectedTrack &&
-              selectedTrack.id_artists.some((s) => d.id_artists.includes(s))
-            ) {
-              return highlightColor;
-            }
-            return primaryColor;
-          })
-          .on("click", (e, d) => {
-            selectedTrack = d;
-            updateSelectedTrack(d, d3.select(e.currentTarget));
+      .data(
+        (d) => d.tracks,
+        (d) => d.track_id
+      )
+      .join(
+        (enter) =>
+          enter
+            .append("circle")
 
-            //retrive cover image using Spotify API
-            const url = `https://api.spotify.com/v1/tracks/${d.id}`;
-            fetch(url, {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${apiToken}`,
-              },
+            .attr("fill", (d) => {
+              if (
+                selectedTrack &&
+                selectedTrack.id_artists.some((s) => d.id_artists.includes(s))
+              ) {
+                return highlightColor;
+              }
+              return primaryColor;
             })
-              .then((response) => response.json())
-              .then((data) => {
-                const cover = data.album.images[0].url;
-                tooltip.select("img").attr("src", cover);
-                const preview = data.preview_url;
-                console.log("preview", data.preview_url);
-                tooltip_audio.attr("src", preview).attr("type", "audio/mpeg");
-              });
+            .call((enter) =>
+              enter
+                .transition()
+                .duration(3000)
+                .attr(
+                  "cy",
+                  (d, i) =>
+                    -Math.floor(i / columns_per_bin) * (radius * 2 + gap) +
+                    radius
+                )
+            )
+            .on("click", (e, d) => {
+              selectedTrack = d;
+              updateSelectedTrack(d, d3.select(e.currentTarget));
 
-            tooltip.select("#tt-year").text(`${d.year}`);
-            tooltip.select("#tt-track").text(`${d.name}`);
-            tooltip.select("#tt-artist").text(`${d.artists}`);
-            tooltip
-              .select("#tt-activecat")
-              .text(`${selectedCategory}: ${d.value}`);
-            tooltip.select("#tt-value").text(`${d.value}`);
-            tooltip.select("#tt-songpos").text(`${d.idx}`);
+              //retrive cover image using Spotify API
+              const url = `https://api.spotify.com/v1/tracks/${d.id}`;
+              fetch(url, {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${apiToken}`,
+                },
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  const cover = data.album.images[0].url;
+                  tooltip.select("img").attr("src", cover);
+                  const preview = data.preview_url;
+                  console.log("preview", data.preview_url);
+                  tooltip_audio.attr("src", preview).attr("type", "audio/mpeg");
+                });
 
-            tooltip.transition().duration(200).style("display", "flex");
-          })
-          .on("mouseover", (e, d) => {
-            d3.select(e.currentTarget)
-              .transition()
-              .duration("200")
-              .attr("r", d.radius * 2);
-          })
+              tooltip.select("#tt-year").text(`${d.year}`);
+              tooltip.select("#tt-track").text(`${d.name}`);
+              tooltip.select("#tt-artist").text(`${d.artists}`);
+              tooltip
+                .select("#tt-activecat")
+                .text(`${selectedCategory}: ${d[selectedCategory]}`);
+              tooltip.select("#tt-value").text(`${d[selectedCategory]}`);
+              tooltip.select("#tt-songpos").text(`${d.idx}`);
 
-          .on("mouseout", (e, d) => {
-            //console.log(e.currentTarget);
-
-            d3.select(e.currentTarget)
-              .transition()
-              .duration("200")
-              .attr(
-                "r",
-                selectedTrack && d.id === selectedTrack.id
-                  ? d.radius * 2
-                  : d.radius
-              );
-          })
+              tooltip.transition().duration(200).style("display", "flex");
+            })
+            .on("mouseover", (e, d) => {
+              d3.select(e.currentTarget)
+                .transition()
+                .duration("200")
+                .attr("r", radius * 2);
+            })
+            .on("mouseout", (e, d) => {
+              //console.log(e.currentTarget);
+              d3.select(e.currentTarget)
+                .transition()
+                .duration("200")
+                .attr(
+                  "r",
+                  selectedTrack && d.id === selectedTrack.id
+                    ? radius * 2
+                    : radius
+                );
+            }),
+        (update) => update.attr("fill", "red")
+      )
+      .attr("r", (d) => radius)
+      .transition()
+      .duration(2000)
+      .attr("cx", (d, i) => (i % columns_per_bin) * (radius * 2 + gap) + radius)
+      .attr(
+        "cy",
+        (d, i) => -Math.floor(i / columns_per_bin) * (radius * 2 + gap) + radius
       );
   }
 
@@ -267,9 +278,9 @@ function useData(data) {
         }
         return primaryColor;
       })
-      .attr("r", (d) => d.radius);
+      .attr("r", (d) => radius);
 
-    target.attr("r", (d) => d.radius * 2).attr("fill", selectedColor);
+    target.attr("r", (d) => radius * 2).attr("fill", selectedColor);
 
     tooltip.transition().duration(200).style("display", "block");
 
