@@ -284,7 +284,13 @@ function useData(data) {
         tooltip.select("img").attr("src", cover);
         const preview = data.preview_url;
         console.log("preview", data.preview_url);
-        tooltip_audio.attr("src", preview).attr("type", "audio/mpeg");
+        if (preview == null) {
+          document.getElementById("player").pause();
+          document.getElementById("player").style.display = "none";
+        } else {
+          tooltip_audio.attr("src", preview).attr("type", "audio/mpeg");
+        document.getElementById("player").style.display = "block";
+        }
       });
   }
 
