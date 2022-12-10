@@ -157,7 +157,7 @@ audio {
   border-radius: 5px;
   box-shadow: 2px 2px 8px 2px #bebebe4d;
   border: solid;
-  border-color: #b1b1b1;
+  border-color: #b1b1b19a;
   border-width: 1px;
 }
 
@@ -246,13 +246,14 @@ img {
 
   #popup {
     width: 700px;
-    height: 500px;
+    height: 80%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin: auto;
     text-align: center;
     align-items: center;
+    padding-right: 80px;
   }
 
   .welcome-text {
@@ -272,15 +273,17 @@ img {
     border-style: solid;
     border-width: 2px;
     width: 80px;
+    background: var(--text-color);
+    color:white;
     border-color: var(--text-color);
-    background: #aea7a01c;
     transition: 0.3s;
     border-radius: 4px;
   }
 
   #close-bttn:hover {
     background: var(--text-color);
-    color:white;
+    color:var(--text-color);
+    background: #aea7a01c;
   }
 
 

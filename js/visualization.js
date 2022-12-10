@@ -30,7 +30,7 @@ function useData(data) {
   //console.log("data", data);
 
   const apiToken =
-    "BQAqgGdgO_-LHBKB5KFlrFGDmU7n60MfukALZx-4ihOJV11bvwDAGL2UCzq5fJOm4YCPHcjSUKUFANp2WsLdAReWW_MLP0oM4neEd4zQGp87dFU2yEU9nui8HGNhx3bQCFmumsn5IWpinFUEWub5BYUWVoiRLrFRAtmpWXMi9AMdgIKek8hYco7Fe46T7obYjSgLGMY";
+    "BQCazgoKwCyjrT2lwkWhIokbQGfmKaItnhqPtj8L_-s0Rgp1g6ZS6pLqyNX9rSQ7FPcSiDLe-hY3lhCY3dTFAaQ_LUS6DBAicoTw0qiERFU301ep5Ivc1edz2dBlH1TzPNfPHMI38S_A6n4SmG44cpLcfoD_gy7Ics5xU4gtb4QQPZ8IMOI3yRe5J2n3Y2A";
 
   const primaryColor = "#504943";
   const highlightColor = "#8ee6a4";
@@ -350,6 +350,9 @@ function useData(data) {
       });
 
     target.attr("r", (d) => d.radius * 2).attr("fill", selectedColor);
+
+    document.getElementById("player").play();
+
   }
 
 
