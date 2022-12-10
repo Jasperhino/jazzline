@@ -9,8 +9,9 @@ d3.csv("data/tracks_filtered_jazz.csv", (t) => {
     duration: t.duration_ms,
     loudness: t.loudness,
     energy: t.energy,
-    //valance: t.valance,
+    valence: t.valence,
     acousticness: t.acousticness,
+    danceability: t.danceability,
   });
 }).then(useData);
 
@@ -57,10 +58,16 @@ function useData(data) {
   const width =
     time_bins.length * (columns_per_bin * (radius * 2 + gap) + year_gap);
 
+  const extent = d3.extent(data, (d) => d.year);
   const timeScale = d3
     .scaleLinear()
-    .domain(d3.extent(data, (d) => d.year))
+    .domain([extent[0], extent[1] + 1])
     .range([0, width]);
+
+  console.log(
+    "extent",
+    d3.extent(data, (d) => d.year)
+  );
 
   console.log("time_bins", time_bins);
   console.log("radius", radius);
@@ -133,7 +140,8 @@ function useData(data) {
 
   density_plot
     .append("path")
-    .attr("id", "desnity-font")
+    .attr("id", "density-back")
+    .attr("class", "density")
     .attr("fill", "#000")
     .attr("stroke", "#000")
     .attr("opacity", ".8")
@@ -142,8 +150,28 @@ function useData(data) {
 
   density_plot
     .append("path")
-    .attr("id", "desnity-back")
+    .attr("id", "density-back")
+    .attr("class", "density")
     .attr("fill", "#69b3a2")
+    .attr("opacity", ".8")
+    .attr("stroke", "#000")
+    .attr("stroke-width", 1)
+    .attr("stroke-linejoin", "round");
+
+  density_plot
+    .append("path")
+    .attr("id", "density-artist-front")
+    .attr("class", "density-artist")
+    .attr("fill", "#000")
+    .attr("stroke", "#000")
+    .attr("stroke-linejoin", "round")
+    .style("clip-path", "url(#clipRect)");
+
+  density_plot
+    .append("path")
+    .attr("id", "density-artist-back")
+    .attr("class", "density-artist")
+    .attr("fill", "purple")
     .attr("opacity", ".8")
     .attr("stroke", "#000")
     .attr("stroke-width", 1)
@@ -259,30 +287,57 @@ function useData(data) {
     );
 
     const density = kde(data.map((d) => d[selectedCategory]));
-    console.log(`density for ${selectedCategory}`, density);
+    const selectedTracks = data
+      .filter((d) => participates(d, selectedTrack))
+      .map((d) => d[selectedCategory]);
+
+    const density_artist = kde(selectedTracks);
+
+    console.log("selectedTracks", selectedTracks);
+    console.log("artist density", density_artist);
+
+    const density_min = d3.min(density, (d) => d[1]);
+    const density_max = d3.max(density, (d) => d[1]);
+    const margin = (density_max - density_min) * 0.1;
 
     const density_y = d3
       .scaleLinear()
       .range([density_height, 0])
-      .domain([0, d3.max(density, (d) => d[1])]);
+      .domain([density_min, density_max + margin]);
 
-    console.log("density_y", density_y.domain());
+    const density_artist_min = d3.min(density_artist, (d) => d[1]);
+    const density_artist_max = d3.max(density_artist, (d) => d[1]);
+    const margin_artist = (density_artist_max - density_artist_min) * 0.1;
 
-    console.log(density_x(0), density_x(0.1), density_x(0.2), density_x(0.3));
-
-    console.log(density_y(0), density_y(0.1), density_y(0.2), density_y(0.3));
+    const density_artist_y = d3
+      .scaleLinear()
+      .range([density_height, 0])
+      .domain([density_artist_min, density_artist_max + margin_artist]);
 
     density_plot
-      .selectAll("path")
-      .data([density, density])
+      .selectAll(".density")
+      .datum(density)
       .attr(
         "d",
         d3
           .area()
-          .curve(d3.curveCardinal)
+          .curve(d3.curveBasis)
           .x((d) => density_x(d[0]))
           .y0(density_height)
           .y1((d) => density_y(d[1]))
+      );
+
+    density_plot
+      .selectAll(".density-artist")
+      .datum(density_artist)
+      .attr(
+        "d",
+        d3
+          .area()
+          .curve(d3.curveBasis)
+          .x((d) => density_x(d[0]))
+          .y0(density_height)
+          .y1((d) => density_artist_y(d[1]))
       );
 
     density_plot
@@ -296,6 +351,7 @@ function useData(data) {
 
     d3.selectAll(".dots")
       .attr("fill", (d) =>
+        //participates(d, selectedTrack) ? highlightColor : primaryColor
         applyIfSelected(selectedTrack, d, highlightColor, primaryColor)
       )
       .attr("r", (d) => applyIfSelected(selectedTrack, d, radius * 1.2, radius))
@@ -339,16 +395,21 @@ function useData(data) {
   updateSelectedCategory(selectedCategory);
 }
 
+function participates(trackA, trackB) {
+  return (
+    trackA &&
+    trackB &&
+    trackA.id_artists.some((s) => trackB.id_artists.includes(s))
+  );
+}
+
 function applyIfSelected(
   selectedTrack,
   currentTrack,
   selectedValue,
   defaultValue
 ) {
-  if (
-    selectedTrack &&
-    selectedTrack.id_artists.some((s) => currentTrack.id_artists.includes(s))
-  ) {
+  if (participates(selectedTrack, currentTrack)) {
     return selectedValue;
   }
   return defaultValue;
