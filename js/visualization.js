@@ -11,6 +11,7 @@ d3.csv("data/tracks_filtered_jazz.csv", (t) => {
     energy: t.energy,
     //valance: t.valance,
     acousticness: t.acousticness,
+    danceability: t.danceability,
   });
 }).then(useData);
 
@@ -28,7 +29,7 @@ function useData(data) {
   }));
 
   const apiToken =
-    "BQCazgoKwCyjrT2lwkWhIokbQGfmKaItnhqPtj8L_-s0Rgp1g6ZS6pLqyNX9rSQ7FPcSiDLe-hY3lhCY3dTFAaQ_LUS6DBAicoTw0qiERFU301ep5Ivc1edz2dBlH1TzPNfPHMI38S_A6n4SmG44cpLcfoD_gy7Ics5xU4gtb4QQPZ8IMOI3yRe5J2n3Y2A";
+    "BQCb3qy1z1IsXewGsO1K110WNUpFL7VMc-5k1g2ix5vQz_KawRNl4EvkQuqHnt6JlO5UarhMTBuwLX0983kkJLPAKAeKWwBNhiDCIcnqFPwfEQWiUwR1n6P4YIFlirD0wsAMm2lqtNRbzQHHulj4f4ozzSeGVZ_7wE0n0Yq1QL5AbEa7wkeNo14t6IaJ6I0";
 
   const primaryColor = "#504943";
   const highlightColor = "#8ee6a4";
@@ -152,7 +153,7 @@ function useData(data) {
     .append("g")
     .call(escala_x)
     .attr("class", "tick")
-    .attr("transform", `translate(0, ${height - 50})`);
+    .attr("transform", `translate(0, ${height - 46})`);
 
   //Group all bins so they can be reordered
   var data_g = d3.select("#viz").append("g").attr("id", "data_group");
@@ -194,11 +195,11 @@ function useData(data) {
       .selectAll(".dots")
       .data(
         (d) =>
-          d.tracks.map((t, i) => ({
-            ...t,
-            x: (i % columns_per_bin) * (radius * 2 + gap) + radius,
-            y: -Math.floor(i / columns_per_bin) * (radius * 2 + gap) + radius,
-          })),
+        d.tracks.map((t, i) => ({
+          ...t,
+          x: (i % columns_per_bin) * (radius * 2 + gap) + radius,
+          y: -Math.floor(i / columns_per_bin) * (radius * 2 + gap) + radius,
+        })),
         (t) => t.id
       )
       .join("circle")
@@ -237,15 +238,21 @@ function useData(data) {
           );
       })
       .attr("class", "dots")
-      .attr("r", radius)
+      .attr("r", (d) => applyIfSelected(selectedTrack, d, radius * 1.5, radius))
+      .style("stroke-width", (d) =>
+        applyIfSelected(selectedTrack, d, "0.4", "0"))
       .attr("fill", (d) =>
         applyIfSelected(selectedTrack, d, highlightColor, primaryColor)
+      )
+      .style("stroke", (d) =>
+        applyIfSelected(selectedTrack, d, "#278a48", "red")
       )
       .transition()
       .duration(2000)
       .attr("cx", (d) => d.x)
       .attr("cy", (d) => d.y);
   }
+
 
   function updateSelectedTrack(selectedTrack, target) {
     console.log("selectedTrack", selectedTrack);
@@ -254,7 +261,7 @@ function useData(data) {
       .attr("fill", (d) =>
         applyIfSelected(selectedTrack, d, highlightColor, primaryColor)
       )
-      .attr("r", (d) => applyIfSelected(selectedTrack, d, radius * 1.2, radius))
+      .attr("r", (d) => applyIfSelected(selectedTrack, d, radius * 1.5, radius))
       .style("stroke-width", (d) =>
         applyIfSelected(selectedTrack, d, "0.4", "0")
       )
@@ -266,11 +273,11 @@ function useData(data) {
 
     const url = `https://api.spotify.com/v1/tracks/${selectedTrack.id}`;
     fetch(url, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${apiToken}`,
-      },
-    })
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${apiToken}`,
+        },
+      })
       .then((response) => response.json())
       .then((data) => {
         const cover = data.album.images[0].url;
