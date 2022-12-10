@@ -106,8 +106,8 @@ function useData(data) {
     .append("img")
     .attr("src", "https://thisartworkdoesnotexist.com/")
     .attr("id", "track-information")
-    .attr("width", 160)
-    .attr("height", 160);
+    .attr("width", 140)
+    .attr("height", 140);
 
   const tooltip_audio = tooltip_g0
     .append("audio")
@@ -136,6 +136,8 @@ function useData(data) {
   tooltip_g.append("h3").attr("id", "tt-track").text("Title");
   tooltip_g.append("h4").attr("id", "tt-artist").text("Artist");
   tooltip_g.append("p").attr("id", "tt-activecat").text("Selected Category");
+  tooltip_g.append("p").attr("id", "tt-activecatvalue").text("Selected Category Value");
+
   // tooltip_g.append("p").attr("id", "tt-value").text("Value");
 
   const distribution_plot = tooltip_g
@@ -183,7 +185,10 @@ function useData(data) {
     tooltip.select("#tt-artist").text(`${selectedTrack.artists.join(", ")}`);
     tooltip
       .select("#tt-activecat")
-      .text(`${selectedCategory}: ${selectedTrack[selectedCategory]}`);
+      .text(`${selectedCategory}`);
+      tooltip
+      .select("#tt-activecatvalue")
+      .text(`${selectedTrack[selectedCategory]}`);
     tooltip.select("#tt-value").text(`${selectedTrack[selectedCategory]}`);
   }
 
