@@ -36,27 +36,38 @@ function useData(data) {
 
   let selectedCategory = "tempo";
   let selectedTrack = data.find((d) => d.id === "4rojclsbFVQvwhxIR0onYr");
-  console.log("selectedTrack", selectedTrack);
 
-  const gap = 0.5;
-  const columns_per_bin = 4;
-  const radius = (columns_per_bin + gap) / 2 - 0.2;
-
-  const width = 4000;
+  // Window size math
   const height = window.innerHeight;
+  const gap = 0.5;
+  const year_gap = 3;
+  const radius = height / 400;
+  const n_timebins = 100;
+
+  const time_bin = d3
+    .bin()
+    .value((d) => d.year)
+    .thresholds(n_timebins);
+  const time_bins = time_bin(data);
+
+  const max_bin_size = d3.max(time_bins, (d) => d.length);
+  const columns_per_bin = Math.ceil(
+    ((max_bin_size * radius * 2 + gap) / height) * 1.5
+  );
+  const width =
+    time_bins.length * (columns_per_bin * (radius * 2 + gap) + year_gap);
 
   const timeScale = d3
     .scaleLinear()
     .domain(d3.extent(data, (d) => d.year))
     .range([0, width]);
 
-  const n_timebins = 100;
-  const time_bin = d3
-    .bin()
-    .value((d) => d.year)
-    .thresholds(n_timebins)
-    .domain(timeScale.domain());
-  const time_bins = time_bin(data);
+  console.log("time_bins", time_bins);
+  console.log("radius", radius);
+  console.log("width", width);
+  console.log("height", height);
+  console.log("max_bin_size", max_bin_size);
+  console.log("columns_per_bin", columns_per_bin);
 
   let tracks_by_year = time_bins.map((d) => {
     return {
@@ -180,8 +191,6 @@ function useData(data) {
       )
       .attr("class", "year_bins");
 
-    const t = year_bins.transition().duration(1000).ease(d3.easeLinear);
-
     dots = year_bins
       .selectAll(".dots")
       .data(
@@ -193,28 +202,22 @@ function useData(data) {
           })),
         (t) => t.id
       )
-      .join(
-        (enter) =>
-          enter
-            .append("circle")
-            .attr("cx", (d) => d.x)
-            .attr("cy", 0)
-            .call((enter) => enter.transition(t).attr("cy", (d) => d.y)),
-        (update) =>
-          update.call((update) =>
-            update
-              .transition(t)
-              .attr("cx", (d) => d.x)
-              .attr("cy", (d) => d.y)
-          ),
-        (exit) => exit.remove()
-      )
-      .attr("class", "dots")
-      .attr("r", radius)
-      .attr("fill", (d) =>
-        applyIfSelected(selectedTrack, d, highlightColor, primaryColor)
-      )
-      .attr("cy", (d) => d.y)
+      .join("circle")
+      // (enter) =>
+      //   enter
+      //     .append("circle")
+      //     .attr("cx", (d) => d.x)
+      //     .attr("cy", 0)
+      //.call((enter) => enter.transition().attr("cy", (d) => d.y)),
+      // (update) =>
+      //   update.call((update) =>
+      //     update
+      //       .transition()
+      //       .duration(2000)
+      //       .attr("cx", (d) => d.x)
+      //       .attr("cy", (d) => d.y)
+      //   ),
+      // (exit) => exit.remove()
       .on("click", (e, d) => {
         selectedTrack = d;
         updateSelectedTrack(d, d3.select(e.currentTarget));
@@ -233,13 +236,22 @@ function useData(data) {
             "r",
             selectedTrack && d.id === selectedTrack.id ? radius * 2 : radius
           );
-      });
+      })
+      .attr("class", "dots")
+      .attr("r", radius)
+      .attr("fill", (d) =>
+        applyIfSelected(selectedTrack, d, highlightColor, primaryColor)
+      )
+      .transition()
+      .duration(2000)
+      .attr("cx", (d) => d.x)
+      .attr("cy", (d) => d.y);
   }
 
   function updateSelectedTrack(selectedTrack, target) {
     console.log("selectedTrack", selectedTrack);
     updateTooltip();
-    dots
+    d3.selectAll(".dots")
       .attr("fill", (d) =>
         applyIfSelected(selectedTrack, d, highlightColor, primaryColor)
       )
