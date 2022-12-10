@@ -34,8 +34,8 @@ function useData(data) {
   const highlightColor = "#8ee6a4";
   const selectedColor = "#34ad5c";
 
-  let selectedCategory = "tempo";
   let selectedTrack = data.find((d) => d.id === "4rojclsbFVQvwhxIR0onYr");
+  let selectedCategory = "energy";
 
   // Window size math
   const height = window.innerHeight;
@@ -120,75 +120,40 @@ function useData(data) {
   tooltip_g.append("h4").attr("id", "tt-artist").text("Artist");
   tooltip_g.append("p").attr("id", "tt-activecat").text("Selected Category");
 
+  //Density plot
   const density_width = 400;
   const density_height = 200;
-  const n_ticks = 40;
-  const density_x = d3
-    .scaleLinear()
-    .domain(d3.extent(data, (d) => d[selectedCategory]))
-    .range([0, density_width]);
-  const kde = kernelDensityEstimator(
-    kernelEpanechnikov(7),
-    density_x.ticks(n_ticks)
-  );
-  const density = kde(data.map((d) => d[selectedCategory]));
-  console.log("density", density);
-
-  console.log(
-    "max",
-    d3.max(density, (d) => d[1])
-  );
-  const density_y = d3
-    .scaleLinear()
-    .range([density_height, 0])
-    .domain([0, d3.max(density, (d) => d[1])]);
+  const cursor_width = 5;
 
   const density_plot = tooltip_g
     .append("svg")
     .attr("width", density_width)
     .attr("height", density_height)
-    .datum(density);
+    .attr("viewBox", [0, 0, density_width, density_height]);
 
   density_plot
     .append("path")
-    .attr("id", "dist_front")
+    .attr("id", "desnity-font")
     .attr("fill", "#000")
     .attr("stroke", "#000")
     .attr("opacity", ".8")
     .attr("stroke-linejoin", "round")
-    .attr(
-      "d",
-      d3
-        .line()
-        .curve(d3.curveBasis)
-        .x((d) => density_x(d[0]))
-        .y((d) => density_y(d[1]))
-    )
     .style("clip-path", "url(#clipRect)");
 
   density_plot
     .append("path")
-    .attr("id", "dist_back")
+    .attr("id", "desnity-back")
     .attr("fill", "#69b3a2")
     .attr("opacity", ".8")
     .attr("stroke", "#000")
     .attr("stroke-width", 1)
-    .attr("stroke-linejoin", "round")
-    .attr(
-      "d",
-      d3
-        .line()
-        .curve(d3.curveBasis)
-        .x((d) => density_x(d[0]))
-        .y((d) => density_y(d[1]))
-    );
+    .attr("stroke-linejoin", "round");
 
-  const cursor_width = 5;
   density_plot
     .append("clipPath")
     .attr("id", "clipRect")
     .append("rect")
-    .attr("x", density_x(selectedTrack[selectedCategory]) - cursor_width / 2)
+    .attr("y", 0)
     .attr("width", cursor_width)
     .attr("height", density_height);
 
@@ -218,19 +183,10 @@ function useData(data) {
 
   let dots;
 
-  function updateTooltip() {
-    tooltip.transition().duration(200).style("display", "block");
-    tooltip.select("#tt-year").text(`${selectedTrack.year}`);
-    tooltip.select("#tt-track").text(`${selectedTrack.name}`);
-    tooltip.select("#tt-artist").text(`${selectedTrack.artists.join(", ")}`);
-    tooltip
-      .select("#tt-activecat")
-      .text(`${selectedCategory}: ${selectedTrack[selectedCategory]}`);
-    tooltip.select("#tt-value").text(`${selectedTrack[selectedCategory]}`);
-  }
-
   function updateSelectedCategory() {
+    updateDensityPlot();
     updateTooltip();
+
     tracks_by_year.forEach((d) => {
       d.tracks.sort((a, b) =>
         d3.ascending(+a[selectedCategory], +b[selectedCategory])
@@ -261,21 +217,6 @@ function useData(data) {
         (t) => t.id
       )
       .join("circle")
-      // (enter) =>
-      //   enter
-      //     .append("circle")
-      //     .attr("cx", (d) => d.x)
-      //     .attr("cy", 0)
-      //.call((enter) => enter.transition().attr("cy", (d) => d.y)),
-      // (update) =>
-      //   update.call((update) =>
-      //     update
-      //       .transition()
-      //       .duration(2000)
-      //       .attr("cx", (d) => d.x)
-      //       .attr("cy", (d) => d.y)
-      //   ),
-      // (exit) => exit.remove()
       .on("click", (e, d) => {
         selectedTrack = d;
         updateSelectedTrack(d, d3.select(e.currentTarget));
@@ -306,9 +247,50 @@ function useData(data) {
       .attr("cy", (d) => d.y);
   }
 
-  function updateSelectedTrack(selectedTrack, target) {
-    console.log("selectedTrack", selectedTrack);
+  function updateDensityPlot() {
+    const density_x = d3
+      .scaleLinear()
+      .domain(d3.extent(data, (d) => d[selectedCategory]))
+      .range([0, density_width]);
+
+    const kde = kernelDensityEstimator(
+      kernelEpanechnikov(7),
+      density_x.ticks(40)
+    );
+
+    const density = kde(data.map((d) => d[selectedCategory]));
+    console.log("density", density);
+
+    const density_y = d3
+      .scaleLinear()
+      .range([density_height, 0])
+      .domain([0, d3.max(density, (d) => d[1])]);
+
+    console.log("density_y", density_y.domain());
+
+    console.log(density_y(0), density_y(0.1), density_y(0.2), density_y(0.3));
+
+    density_plot
+      .selectAll("path")
+      .datum(density)
+      .attr(
+        "d",
+        d3
+          .line()
+          .curve(d3.curveBasis)
+          .x((d) => density_x(d[0]))
+          .y((d) => density_y(d[1]))
+      );
+
+    density_plot
+      .select("rect")
+      .attr("x", density_x(selectedTrack[selectedCategory]) - cursor_width / 2);
+  }
+
+  function updateSelectedTrack() {
+    updateDensityPlot();
     updateTooltip();
+
     d3.selectAll(".dots")
       .attr("fill", (d) =>
         applyIfSelected(selectedTrack, d, highlightColor, primaryColor)
@@ -340,7 +322,18 @@ function useData(data) {
       });
   }
 
-  updateSelectedCategory("tempo");
+  function updateTooltip() {
+    tooltip.select("#tt-value").text(`${selectedTrack[selectedCategory]}`);
+    tooltip.transition().duration(200).style("display", "block");
+    tooltip.select("#tt-year").text(`${selectedTrack.year}`);
+    tooltip.select("#tt-track").text(`${selectedTrack.name}`);
+    tooltip.select("#tt-artist").text(`${selectedTrack.artists.join(", ")}`);
+    tooltip
+      .select("#tt-activecat")
+      .text(`${selectedCategory}: ${selectedTrack[selectedCategory]}`);
+  }
+
+  updateSelectedCategory(selectedCategory);
 }
 
 function applyIfSelected(
