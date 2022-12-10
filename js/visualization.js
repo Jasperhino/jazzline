@@ -29,14 +29,14 @@ function useData(data) {
   }));
 
   const apiToken =
-    "BQCb3qy1z1IsXewGsO1K110WNUpFL7VMc-5k1g2ix5vQz_KawRNl4EvkQuqHnt6JlO5UarhMTBuwLX0983kkJLPAKAeKWwBNhiDCIcnqFPwfEQWiUwR1n6P4YIFlirD0wsAMm2lqtNRbzQHHulj4f4ozzSeGVZ_7wE0n0Yq1QL5AbEa7wkeNo14t6IaJ6I0";
+    "BQAxnv1qdx3FHjskv41GKyxhXl7Gi2nctMWQsn6jioAYCOwPrRnYPb4Ai61xUmf1VdAMMTZiRSxiZNa1SL5AWwepOfrls9KL-xtG3LCrEgBvw7DKhwygFVqS7KbrWL4EVQLmA_JNLuMxiUbIT74CnBZbFAqX2mvz32yu8QmBAclf_z5BKv_3FX9qdTvmQgk";
 
   const primaryColor = "#504943";
   const highlightColor = "#8ee6a4";
-  const selectedColor = "#34ad5c";
+  const selectedColor = "#f7f7f7";
 
   let selectedCategory = "tempo";
-  let selectedTrack = data.find((d) => d.id === "4rojclsbFVQvwhxIR0onYr");
+  let selectedTrack = data.find((d) => d.id === "6YIp0sZ8Ykgt7bzHO62KTb");
 
   // Window size math
   const height = window.innerHeight;
@@ -114,6 +114,28 @@ function useData(data) {
     .attr("controls", true)
     .attr("autoplay", true)
     .attr("id", "player");
+
+  const url = `https://api.spotify.com/v1/tracks/${selectedTrack.id}`;
+  fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      const cover = data.album.images[0].url;
+      tooltip.select("img").attr("src", cover);
+      const preview = data.preview_url;
+      console.log("preview", data.preview_url);
+      if (preview == null) {
+        document.getElementById("player").pause();
+        document.getElementById("player").style.display = "none";
+      } else {
+        tooltip_audio.attr("src", preview).attr("type", "audio/mpeg");
+        document.getElementById("player").style.display = "block";
+      }
+    });
 
   const tooltip_g = tooltip.append("div").attr("id", "2col");
   tooltip_g.append("h5").attr("id", "tt-year").text("Year");
@@ -289,7 +311,7 @@ function useData(data) {
           document.getElementById("player").style.display = "none";
         } else {
           tooltip_audio.attr("src", preview).attr("type", "audio/mpeg");
-        document.getElementById("player").style.display = "block";
+          document.getElementById("player").style.display = "block";
         }
       });
   }
