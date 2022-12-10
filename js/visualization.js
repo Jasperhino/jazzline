@@ -259,7 +259,7 @@ function useData(data) {
     );
 
     const density = kde(data.map((d) => d[selectedCategory]));
-    console.log("density", density);
+    console.log(`density for ${selectedCategory}`, density);
 
     const density_y = d3
       .scaleLinear()
@@ -268,18 +268,21 @@ function useData(data) {
 
     console.log("density_y", density_y.domain());
 
+    console.log(density_x(0), density_x(0.1), density_x(0.2), density_x(0.3));
+
     console.log(density_y(0), density_y(0.1), density_y(0.2), density_y(0.3));
 
     density_plot
       .selectAll("path")
-      .datum(density)
+      .data([density, density])
       .attr(
         "d",
         d3
-          .line()
-          .curve(d3.curveBasis)
+          .area()
+          .curve(d3.curveCardinal)
           .x((d) => density_x(d[0]))
-          .y((d) => density_y(d[1]))
+          .y0(density_height)
+          .y1((d) => density_y(d[1]))
       );
 
     density_plot
