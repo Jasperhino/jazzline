@@ -30,17 +30,17 @@ function useData(data) {
   //console.log("data", data);
 
   const apiToken =
-    "BQCy05lRXshl9VpyPH9BFEgcspBHG2E0dj__OsoqYKTGiG297IwM7ajVmb7Gbgw4s2_htgmd02LenOS9fcmloBT9u";
+    "BQAqgGdgO_-LHBKB5KFlrFGDmU7n60MfukALZx-4ihOJV11bvwDAGL2UCzq5fJOm4YCPHcjSUKUFANp2WsLdAReWW_MLP0oM4neEd4zQGp87dFU2yEU9nui8HGNhx3bQCFmumsn5IWpinFUEWub5BYUWVoiRLrFRAtmpWXMi9AMdgIKek8hYco7Fe46T7obYjSgLGMY";
 
   const primaryColor = "#504943";
   const highlightColor = "#8ee6a4";
-  const selectedColor = "#57a872";
+  const selectedColor = "#34ad5c";
 
   let selectedCategory = "tempo";
   let selectedTrack = null;
 
   //const width = scale($(window).scrollTop(0), 0, 4000, window.innerWidth - 60, 4000);
-  const width =  4000;
+  const width = 4000;
   const height = window.innerHeight;
 
   const timeScale = d3
@@ -61,7 +61,7 @@ function useData(data) {
     return d;
   });
 
-  console.log("time_bins_sorted", time_bins_sorted);
+  // console.log("time_bins_sorted", time_bins_sorted);
 
   // var histogram = d3
   //   .histogram()
@@ -98,13 +98,12 @@ function useData(data) {
     .append("div")
     .attr("class", "track-info")
     .style("position", "fixed")
-    //.attr("width", "300px")
     .style("display", "none");
-    // .style("background-color", "white")
-    // .style("border", "solid")
-    // .style("border-width", "1px")
-    // .style("border-radius", "5px")
-    // .style("padding", "10px");
+  // .style("background-color", "white")
+  // .style("border", "solid")
+  // .style("border-width", "1px")
+  // .style("border-radius", "5px")
+  // .style("padding", "10px");
   // .on("mouseout", (e) => {
   //   d3.select(e.currentTarget)
   //     .style("z-index", 0)
@@ -114,10 +113,10 @@ function useData(data) {
   //     .style("visibility", "hidden");
   // });
   const tooltip_g0 = tooltip
-      .append("div")
-      .attr("id", "col1");
+    .append("div")
+    .attr("id", "col1");
 
-      
+
   tooltip_g0
     .append("img")
     .attr(
@@ -136,15 +135,15 @@ function useData(data) {
 
 
   const tooltip_g = tooltip
-      .append("div")
-      .attr("id", "2col");
-      tooltip_g.append("h5").attr("id", "tt-year").text("Year");
-      tooltip_g.append("h3").attr("id", "tt-track").text("Title");
-      tooltip_g.append("h4").attr("id", "tt-artist").text("Artist");
-      tooltip_g.append("p").attr("id", "tt-activecat").text("Selected Category");
-    // tooltip_g.append("p").attr("id", "tt-value").text("Value");
-    // tooltip_g.append("p").attr("id", "tt-songpos").text("Song position"); // this can be deleted later
-  
+    .append("div")
+    .attr("id", "2col");
+  tooltip_g.append("h5").attr("id", "tt-year").text("Year");
+  tooltip_g.append("h3").attr("id", "tt-track").text("Title");
+  tooltip_g.append("h4").attr("id", "tt-artist").text("Artist");
+  tooltip_g.append("p").attr("id", "tt-activecat").text("Selected Category");
+  // tooltip_g.append("p").attr("id", "tt-value").text("Value");
+  // tooltip_g.append("p").attr("id", "tt-songpos").text("Song position"); // this can be deleted later
+
   // const distribution_plot = tooltip_g
   //   .append("svg")
   //   .attr("width", 200)
@@ -241,17 +240,17 @@ function useData(data) {
       //retrive cover image using Spotify API
       const url = `https://api.spotify.com/v1/tracks/${d.id}`;
       fetch(url, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${apiToken}`,
-        },
-      })
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${apiToken}`,
+          },
+        })
         .then((response) => response.json())
         .then((data) => {
           const cover = data.album.images[0].url;
           tooltip.select("img").attr("src", cover);
           const preview = data.preview_url;
-          console.log("preview", data.preview_url);
+          //console.log("preview", data.preview_url);
           tooltip_audio.attr("src", preview).attr("type", "audio/mpeg");
         });
 
@@ -289,7 +288,7 @@ function useData(data) {
     });
 
 
-  window.updateSelectedCategory = function(selectedCategory) {
+  window.updateSelectedCategory = function (selectedCategory) {
 
     const time_bins_sorted = time_bins.map((d) => {
       d.sort((a, b) => a[selectedCategory] - b[selectedCategory]);
@@ -297,7 +296,7 @@ function useData(data) {
     });
 
     //document.getElementById("data_group").remove();
-    
+
 
     // console.log("selectedCategory:", selectedCategory);
     // tooltip
@@ -308,6 +307,9 @@ function useData(data) {
 
   function updateSelectedTrack(selectedTrack, target) {
     // console.log("selectedTrack", selectedTrack);
+
+        //Turn of audio player, so new song can play without overlapping
+        document.getElementById("player").pause();
 
     dots
       .attr("fill", (d) => {
@@ -328,7 +330,7 @@ function useData(data) {
         }
         return d.radius - 0.1;
       })
-      .style("stroke-width",  (d) => {
+      .style("stroke-width", (d) => {
         if (
           selectedTrack &&
           selectedTrack.id_artists.some((s) => d.id_artists.includes(s))
@@ -337,7 +339,7 @@ function useData(data) {
         }
         return "0";
       })
-      .style("stroke",  (d) => {
+      .style("stroke", (d) => {
         if (
           selectedTrack &&
           selectedTrack.id_artists.some((s) => d.id_artists.includes(s))
@@ -350,9 +352,8 @@ function useData(data) {
     target.attr("r", (d) => d.radius * 2).attr("fill", selectedColor);
   }
 
-  
+
   var radios = document.querySelectorAll('input[type=radio][name="features"]');
   radios.forEach(radio => radio.addEventListener('change', () => updateSelectedCategory(radio.value)));
 
 }
-
