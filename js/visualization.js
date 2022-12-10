@@ -177,7 +177,7 @@ function useData(data) {
   let dots;
 
   function updateTooltip() {
-    tooltip.transition().duration(200).style("display", "block");
+    tooltip.transition().duration(200).style("display", "flex");
     tooltip.select("#tt-year").text(`${selectedTrack.year}`);
     tooltip.select("#tt-track").text(`${selectedTrack.name}`);
     tooltip.select("#tt-artist").text(`${selectedTrack.artists.join(", ")}`);

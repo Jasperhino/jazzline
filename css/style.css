@@ -45,14 +45,14 @@ h1 {
 }
 
 h3 {
-font-size: 1.5em;
+font-size: 1.35em;
 font-weight: 300;
 margin: 0px;
 margin-top: 5px;
 }
 
 h4 {
-font-size: 1.65em;
+font-size: 1.5em;
 font-weight: 800;
 margin: 0px;
 margin-top: 8px;
@@ -143,6 +143,7 @@ font-weight: 700;
 margin-top: 16px;
 font-size: 1.3em;
 text-transform: capitalize;
+margin-bottom: 24px;
 }
 
 audio {
@@ -154,16 +155,16 @@ margin-top: 20px;
 .track-info {
 position: fixed;
 width: 500px;
-left: 24px;
+left: 22px;
 top: 90px;
 display: flex;
-background-color: rgb(255 255 255 / 50%);
-padding: 14px;
+background-color: #e6e8e6db;
+padding: 34px;
 padding-right: 20px;
-border-radius: 5px;
+/* border-radius: 5px; */
 box-shadow: 2px 2px 8px 2px #bebebe4d;
 border: solid;
-border-color: #b1b1b19a;
+border-color: #e6e8e6;
 border-width: 1px;
 }
 
@@ -174,7 +175,7 @@ width: 160px;
 }
 
 img {
-border-radius: 8px;
+border-radius: 3px;
 }
 
 
