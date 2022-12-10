@@ -119,20 +119,78 @@ function useData(data) {
   tooltip_g.append("h3").attr("id", "tt-track").text("Title");
   tooltip_g.append("h4").attr("id", "tt-artist").text("Artist");
   tooltip_g.append("p").attr("id", "tt-activecat").text("Selected Category");
-  // tooltip_g.append("p").attr("id", "tt-value").text("Value");
-  // tooltip_g.append("p").attr("id", "tt-songpos").text("Song position"); // this can be deleted later
 
-  const distribution_plot = tooltip_g
+  const density_width = 400;
+  const density_height = 200;
+  const n_ticks = 40;
+  const density_x = d3
+    .scaleLinear()
+    .domain(d3.extent(data, (d) => d[selectedCategory]))
+    .range([0, density_width]);
+  const kde = kernelDensityEstimator(
+    kernelEpanechnikov(7),
+    density_x.ticks(n_ticks)
+  );
+  const density = kde(data.map((d) => d[selectedCategory]));
+  console.log("density", density);
+
+  console.log(
+    "max",
+    d3.max(density, (d) => d[1])
+  );
+  const density_y = d3
+    .scaleLinear()
+    .range([density_height, 0])
+    .domain([0, d3.max(density, (d) => d[1])]);
+
+  const density_plot = tooltip_g
     .append("svg")
-    .attr("width", 200)
-    .attr("height", 100)
-    .style("background-color", selectedColor);
+    .attr("width", density_width)
+    .attr("height", density_height)
+    .datum(density);
 
-  // const distribution_plot = tooltip_g
-  //   .append("svg")
-  //   .attr("width", 200)
-  //   .attr("height", 100)
-  //   .style("background-color", selectedColor);
+  density_plot
+    .append("path")
+    .attr("id", "dist_front")
+    .attr("fill", "#000")
+    .attr("stroke", "#000")
+    .attr("opacity", ".8")
+    .attr("stroke-linejoin", "round")
+    .attr(
+      "d",
+      d3
+        .line()
+        .curve(d3.curveBasis)
+        .x((d) => density_x(d[0]))
+        .y((d) => density_y(d[1]))
+    )
+    .style("clip-path", "url(#clipRect)");
+
+  density_plot
+    .append("path")
+    .attr("id", "dist_back")
+    .attr("fill", "#69b3a2")
+    .attr("opacity", ".8")
+    .attr("stroke", "#000")
+    .attr("stroke-width", 1)
+    .attr("stroke-linejoin", "round")
+    .attr(
+      "d",
+      d3
+        .line()
+        .curve(d3.curveBasis)
+        .x((d) => density_x(d[0]))
+        .y((d) => density_y(d[1]))
+    );
+
+  const cursor_width = 5;
+  density_plot
+    .append("clipPath")
+    .attr("id", "clipRect")
+    .append("rect")
+    .attr("x", density_x(selectedTrack[selectedCategory]) - cursor_width / 2)
+    .attr("width", cursor_width)
+    .attr("height", density_height);
 
   // Timeline x Axis
   var svg_time = d3
@@ -298,4 +356,22 @@ function applyIfSelected(
     return selectedValue;
   }
   return defaultValue;
+}
+
+function kernelDensityEstimator(kernel, X) {
+  return function (V) {
+    return X.map(function (x) {
+      return [
+        x,
+        d3.mean(V, function (v) {
+          return kernel(x - v);
+        }),
+      ];
+    });
+  };
+}
+function kernelEpanechnikov(k) {
+  return function (v) {
+    return Math.abs((v /= k)) <= 1 ? (0.75 * (1 - v * v)) / k : 0;
+  };
 }
