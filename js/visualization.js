@@ -23,26 +23,25 @@ function useData(data) {
       .map((id) => id.slice(1, -1)),
     artists: d.artists
       .slice(1, -1)
-      .split(",  ")
+      .split(", ")
       .map((a) => a.slice(1, -1)),
   }));
 
-  console.log("data", data);
-
   const apiToken =
-    "BQCy05lRXshl9VpyPH9BFEgcspBHG2E0dj__OsoqYKTGiG297IwM7ajVmb7Gbgw4s2_htgmd02LenOS9fcmloBT9u";
+    "BQCazgoKwCyjrT2lwkWhIokbQGfmKaItnhqPtj8L_-s0Rgp1g6ZS6pLqyNX9rSQ7FPcSiDLe-hY3lhCY3dTFAaQ_LUS6DBAicoTw0qiERFU301ep5Ivc1edz2dBlH1TzPNfPHMI38S_A6n4SmG44cpLcfoD_gy7Ics5xU4gtb4QQPZ8IMOI3yRe5J2n3Y2A";
 
-  const primaryColor = "#36312D";
-  const highlightColor = "#8ace9b";
-  const selectedColor = "#4F9D69";
+  const primaryColor = "#504943";
+  const highlightColor = "#8ee6a4";
+  const selectedColor = "#34ad5c";
 
   let selectedCategory = "tempo";
+  let selectedTrack = data.find((d) => d.id === "4rojclsbFVQvwhxIR0onYr");
+  console.log("selectedTrack", selectedTrack);
 
   const gap = 0.5;
-  const columns_per_bin = 8;
-  const radius = (columns_per_bin + gap) / 2 - 0.1;
+  const columns_per_bin = 4;
+  const radius = (columns_per_bin + gap) / 2 - 0.2;
 
-  //const width = scale($(window).scrollTop(0), 0, 4000, window.innerWidth - 60, 4000);
   const width = 4000;
   const height = window.innerHeight;
 
@@ -69,7 +68,7 @@ function useData(data) {
 
   d3.selectAll("[name=features]").on("change", (e) => {
     selectedCategory = e.target.value;
-    updateSelectedCategory(selectedCategory);
+    updateSelectedCategory();
   });
 
   const svg = d3
@@ -81,10 +80,6 @@ function useData(data) {
     .attr("id", "viz")
     .attr("viewBox", [0, 0, width, height])
     .attr("transform", `translate(20, 0)`);
-
-  // const scrollcontainer = d3
-  // .select("#scrollable")
-  // .on("scroll", console.log("scrolllll"));
 
   const tooltip = d3
     .select("body")
@@ -122,6 +117,12 @@ function useData(data) {
     .attr("height", 100)
     .style("background-color", selectedColor);
 
+  // const distribution_plot = tooltip_g
+  //   .append("svg")
+  //   .attr("width", 200)
+  //   .attr("height", 100)
+  //   .style("background-color", selectedColor);
+
   // Timeline x Axis
   var svg_time = d3
     .select("#viz")
@@ -148,7 +149,19 @@ function useData(data) {
 
   let dots;
 
-  function updateSelectedCategory(selectedCategory) {
+  function updateTooltip() {
+    tooltip.transition().duration(200).style("display", "block");
+    tooltip.select("#tt-year").text(`${selectedTrack.year}`);
+    tooltip.select("#tt-track").text(`${selectedTrack.name}`);
+    tooltip.select("#tt-artist").text(`${selectedTrack.artists.join(", ")}`);
+    tooltip
+      .select("#tt-activecat")
+      .text(`${selectedCategory}: ${selectedTrack[selectedCategory]}`);
+    tooltip.select("#tt-value").text(`${selectedTrack[selectedCategory]}`);
+  }
+
+  function updateSelectedCategory() {
+    updateTooltip();
     tracks_by_year.forEach((d) => {
       d.tracks.sort((a, b) =>
         d3.ascending(+a[selectedCategory], +b[selectedCategory])
@@ -167,51 +180,78 @@ function useData(data) {
       )
       .attr("class", "year_bins");
 
+    const t = year_bins.transition().duration(1000).ease(d3.easeLinear);
+
     dots = year_bins
       .selectAll(".dots")
       .data(
-        (d) => d.tracks,
+        (d) =>
+          d.tracks.map((t, i) => ({
+            ...t,
+            x: (i % columns_per_bin) * (radius * 2 + gap) + radius,
+            y: -Math.floor(i / columns_per_bin) * (radius * 2 + gap) + radius,
+          })),
         (t) => t.id
       )
       .join(
-        (enter) => {
-          let e = enter.append("circle").attr("fill", "red");
-          console.log("e", e);
-          return e;
-        },
-        (update) => {
-          let u = update.attr("fill", "purple");
-          console.log("u", u);
-          return u;
-        }
+        (enter) =>
+          enter
+            .append("circle")
+            .attr("cx", (d) => d.x)
+            .attr("cy", 0)
+            .call((enter) => enter.transition(t).attr("cy", (d) => d.y)),
+        (update) =>
+          update.call((update) =>
+            update
+              .transition(t)
+              .attr("cx", (d) => d.x)
+              .attr("cy", (d) => d.y)
+          ),
+        (exit) => exit.remove()
       )
       .attr("class", "dots")
-      .attr("r", (d) => radius)
-
-      .attr("cx", (d, i) => (i % columns_per_bin) * (radius * 2 + gap) + radius)
-      .attr(
-        "cy",
-        (d, i) => -Math.floor(i / columns_per_bin) * (radius * 2 + gap) + radius
-      );
+      .attr("r", radius)
+      .attr("fill", (d) =>
+        applyIfSelected(selectedTrack, d, highlightColor, primaryColor)
+      )
+      .attr("cy", (d) => d.y)
+      .on("click", (e, d) => {
+        selectedTrack = d;
+        updateSelectedTrack(d, d3.select(e.currentTarget));
+      })
+      .on("mouseover", (e, d) => {
+        d3.select(e.currentTarget)
+          .transition()
+          .duration("200")
+          .attr("r", radius * 2.5);
+      })
+      .on("mouseout", (e, d) => {
+        d3.select(e.currentTarget)
+          .transition()
+          .duration("200")
+          .attr(
+            "r",
+            selectedTrack && d.id === selectedTrack.id ? radius * 2 : radius
+          );
+      });
   }
 
   function updateSelectedTrack(selectedTrack, target) {
     console.log("selectedTrack", selectedTrack);
+    updateTooltip();
     dots
-      .attr("fill", (d) => {
-        if (
-          selectedTrack &&
-          selectedTrack.id_artists.some((s) => d.id_artists.includes(s))
-        ) {
-          return highlightColor;
-        }
-        return primaryColor;
-      })
-      .attr("r", (d) => radius);
+      .attr("fill", (d) =>
+        applyIfSelected(selectedTrack, d, highlightColor, primaryColor)
+      )
+      .attr("r", (d) => applyIfSelected(selectedTrack, d, radius * 1.2, radius))
+      .style("stroke-width", (d) =>
+        applyIfSelected(selectedTrack, d, "0.4", "0")
+      )
+      .style("stroke", (d) =>
+        applyIfSelected(selectedTrack, d, "#278a48", "red")
+      );
 
-    target.attr("r", (d) => radius * 2).attr("fill", selectedColor);
-
-    tooltip.transition().duration(200).style("display", "block");
+    target.attr("r", radius * 2).attr("fill", selectedColor);
 
     const url = `https://api.spotify.com/v1/tracks/${selectedTrack.id}`;
     fetch(url, {
@@ -228,34 +268,22 @@ function useData(data) {
         console.log("preview", data.preview_url);
         tooltip_audio.attr("src", preview).attr("type", "audio/mpeg");
       });
-
-    // // fill distribution plot
-    // distribution_plot.selectAll("*").remove();
-    // const histogram = d3
-    //   .histogram()
-    //   .value((d) => d[selectedCategory])
-    //   .domain(yScale.domain())
-    //   .thresholds(70);
-    // const histogram_data = histogram(data);
-    // const xScale = d3
-    //   .scaleLinear()
-    //   .domain(d3.extent(histogram_data, (d) => d.x0))
-    //   .range([0, 200]);
-    // const yScale = d3
-    //   .scaleLinear()
-    //   .domain([0, d3.max(histogram_data, (d) => d.length)])
-    //   .range([100, 0]);
-    // const area = d3
-    //   .area()
-    //   .x((d) => xScale(d.x0))
-    //   .y0(100)
-    //   .y1((d) => yScale(d.length));
-    // distribution_plot
-    //   .append("path")
-    //   .datum(histogram_data)
-    //   .attr("fill", "#69b3a2")
-    //   .attr("d", area);
   }
 
   updateSelectedCategory("tempo");
+}
+
+function applyIfSelected(
+  selectedTrack,
+  currentTrack,
+  selectedValue,
+  defaultValue
+) {
+  if (
+    selectedTrack &&
+    selectedTrack.id_artists.some((s) => currentTrack.id_artists.includes(s))
+  ) {
+    return selectedValue;
+  }
+  return defaultValue;
 }

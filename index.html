@@ -1,86 +1,101 @@
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Jazzline</title>
-    <meta name="description" content="Jazz Timeline for Visualization class" />
-    <meta name="keywords" content="Jazz Timeline, MDM, 2022" />
-    <meta name="author" content="Alexandra Oliveira, Jasper Blum" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jazzline</title>
+  <meta name="description" content="Jazz Timeline for Visualization class" />
+  <meta name="keywords" content="Jazz Timeline, MDM, 2022" />
+  <meta name="author" content="Alexandra Oliveira, Jasper Blum" />
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet">
+  <!-- Style -->
+  <link rel="stylesheet" type="text/css" href="css/style.css" />
+  <!-- D3 -->
+  <script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
+  <!-- <script src="https://unpkg.com/d3-simple-slider"></script> -->
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
-    <!-- <script src="https://unpkg.com/d3-simple-slider"></script> -->
-    <script type="text/javascript" src="scroll.js"></script>
-    
 
-  </head>
+</head>
 
-  <body>
-
-    <div id = "popup">
-      This is the popup window
-    </div>
-
-      <!-- Scroll down! -->
-    </div>
-    <div id="fixed-container">
-      <div id="scrollable">
+<body>
+  </div>
+  <div id="fixed-container">
+    <div id="scrollable">
       <!-- viz goes inside here -->
-      </div>
     </div>
-    <div id="col-left">
+  </div>
+  <div id="col-left">
     <div>
-        <h1><i> Jazzline</i></h1>
-        <!-- <h2>Jazz songs from the last century</br>from the most popular artists.</h2> -->
+      <h1 onclick="openPopup()"><i>Jazzline</i></h1>
     </div>
-
-    <div><!-- dont delete this --></div> 
   </div>
   <form id="form" class="btn-group btn-group-toggle" data-toggle="buttons">
     <label class="btn btn-secondary active">
-        <input
-          class="cb"
-          type="radio"
-          name="features"
-          value="tempo"
-          checked
-        /><p class = "btn-label">Tempo</p><br />
-      </label>
-      <label class="btn btn-secondary">
-        <input
-          class="cb"
-          type="radio"
-          name="features"
-          value="valance"
-        /><p class = "btn-label">Valence</p><br />
-      </label>
-      <label class="btn btn-secondary active">
-        <input
-          class="cb"
-          type="radio"
-          name="features"
-          value="energy"
-        /><p class = "btn-label">Energy</p><br />
-      </label>
-      <label class="btn btn-secondary">
-        <input
-          class="cb"
-          type="radio"
-          name="features"
-          value="acousticness"
-        /><p class = "btn-label">Acousticness</p><br />
-      </label>
-    </form>
-    <script type="module" src="js/visualization.js"></script>
-    <script type="text/javascript" src="scroll.js"></script>
+      <input class="cb" type="radio" name="features" value="tempo" checked />
+      <p class="btn-label">Tempo</p><br />
+    </label>
+    <label class="btn btn-secondary">
+      <input class="cb" type="radio" name="features" value="valance" />
+      <p class="btn-label">Valence</p><br />
+    </label>
+    <label class="btn btn-secondary active">
+      <input class="cb" type="radio" name="features" value="energy" />
+      <p class="btn-label">Energy</p><br />
+    </label>
+    <label class="btn btn-secondary">
+      <input class="cb" type="radio" name="features" value="acousticness" />
+      <p class="btn-label">Acousticness</p><br />
+    </label>
+  </form>
 
-  </body>
+  <div id="popup-container">
+    <h1><i>Jazzline</i></h1>
+    <div id="popup">
+        <p class="welcome-text"><b><i>Welcome do Jazzline!</i></b></p>
+        <p class="welcome-text">You are viewing tracks from the most popular jazz artists.</p>
+        <p class="welcome-text">Every dot represents a track retrieved from a Spotify dataset.<br>
+          The timeline highlights all tracks from artists of the track you select.
+        </p>
+        <p class="welcome-text">The tracks are ordered from bottom up according the selected audio feature.
+          For example, if you select <i>Valance</i>, the higher the position of the track, the more positive it is.</p>
+        </p>
+        <p class="welcome-text"></p>
+        <p class="welcome-text"></p>
+        <div id="close-bttn" onclick="closePopup()">Got it!</div>
+    </div>
+  </div>
+  <div id="loader" class="in-progress"></div>
+
+
+  <script type="module" src="js/visualization.js"></script>
+  <script>
+    function closePopup() {
+      const popup = document.getElementById('popup-container');
+      popup.style.display = "none";
+      
+    }
+
+    function openPopup() {
+      const popup = document.getElementById('popup-container');
+      popup.style.display = "block";
+    }
+
+    function loader() {
+      window.onload = function () {
+        setTimeout(function () {
+          document.getElementById("loader").style.display = "none";
+        }, 2000);
+      }
+    }
+    loader();
+  </script>
+
+</body>
 
 </html>

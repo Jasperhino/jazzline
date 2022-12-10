@@ -1,9 +1,9 @@
 
 :root {
     --bg-color: #E6E8E6;
-    --text-color: #36312D;
-    --primary-color: #4F9D69;
-    --secundary-color: #8ace9b;
+    --text-color: #504943;
+    --primary-color: #34ad5c;
+    --secundary-color: #8ee6a4;
 
 }
 
@@ -17,7 +17,7 @@ body {
 
 }
 
-#fixed-container {
+#fixed-container {  /*viz is inside fixed-container > scrollable > viz */
 }
 
 #scrollable {
@@ -35,6 +35,8 @@ h1, h2, h3 h4, h5 {
 
 h1 {
   font-size: 2.4em;
+  font-weight: 800;
+  cursor: pointer;
 }
 
 h3 {
@@ -45,16 +47,23 @@ h3 {
 }
 
 h4 {
-font-size: 1.35em;
+font-size: 1.65em;
 font-weight: 800;
 margin: 0px;
-margin-top: 5px;
+margin-top: 8px;
 
 }
 
 h5 {
-  font-size: 1.1em;
+  font-size: 1.2em;
   font-weight: 800;
+  margin: 0px;
+  margin-top: 5px;
+}
+
+p {
+  font-size: 1.1em;
+  font-weight: 400;
   margin: 0px;
   margin-top: 5px;
 }
@@ -62,7 +71,6 @@ h5 {
 #col-left {
     margin-top: 20px;
     margin-left: 30px;
-    height: 100vh;
     position: fixed;
     left: 0;
     top: 0;
@@ -127,11 +135,13 @@ h5 {
 
 
 #tt-activecat {
-
+  margin-top: 16px;
+  font-size: 1.3em;
+  text-transform: capitalize;
 }
 
 audio {
-  width: 160px;
+  width: 140px;
   height: 34px;
   margin-top: 20px;
 }
@@ -139,12 +149,17 @@ audio {
 .track-info {
   position: fixed;
   width: 500px;
-  right: 50px;
-  top: 80px;
+  left: 24px;
+  top: 90px;
   display: flex;
   background-color: rgb(255 255 255 / 50%);
   padding: 14px;
-  border-radius: 10px;
+  padding-right: 20px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 8px 2px #bebebe4d;
+  border: solid;
+  border-color: #b1b1b19a;
+  border-width: 1px;
 }
 
 
@@ -154,7 +169,7 @@ audio {
 }
 
 img {
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 
@@ -218,8 +233,107 @@ img {
 
   /* Pop Up window */
 
-  #popup {
-    width: 500px;
-    height: 500px;
-    display: none;
+  #popup-container {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    background-color: #ffffffcc;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    padding-top: 20px;
+    padding-left: 30px;
   }
+
+  #popup {
+    width: 700px;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+    text-align: center;
+    align-items: center;
+    padding-right: 80px;
+  }
+
+  .welcome-text {
+    font-size: 1.4em;
+    font-weight: 500;
+    margin-top: 12px;
+  }
+
+  #close-bttn {
+    padding: 8px;
+    margin-top: 3px;
+    font-size: 1.2em;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    border-style: solid;
+    border-width: 2px;
+    width: 80px;
+    background: var(--text-color);
+    color:white;
+    border-color: var(--text-color);
+    transition: 0.3s;
+    border-radius: 4px;
+  }
+
+  #close-bttn:hover {
+    background: var(--text-color);
+    color:var(--text-color);
+    background: #aea7a01c;
+  }
+
+
+
+  /* Loader */
+  
+  .in-progress {
+    --pwd: var(--wave-diameter, 48px);
+    --pwb: var(--wave-thickness, 3px);
+    --pwt: var(--wave-duration, 1.2s);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: block;
+    background-color: var(--bg-color);
+    z-index: 1000;
+  }
+  
+  @keyframes progresswave {
+    from {
+      border: var(--pwb) rgba(0, 0, 0, .5) solid;
+      width: calc(var(--pwb) * 2);
+      height: calc(var(--pwb) * 2);
+      border-radius: calc(var(--pwb) * 2);
+    }
+    to {
+      border: var(--pwb) rgba(0, 0, 0, 0) solid;
+      width: var(--pwd);
+      height: var(--pwd);
+      border-radius: var(--pwd);
+    }
+  }
+  
+  .in-progress::before, .in-progress::after {
+    content: "";
+    display: block;
+    position: absolute;
+    box-sizing: border-box;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    margin: auto;
+    animation: var(--pwt) linear infinite progresswave;
+  }
+  
+  .in-progress::after {
+    animation-delay: calc(var(--pwt) / 2);
+  }
+  
