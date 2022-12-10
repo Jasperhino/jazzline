@@ -307,10 +307,6 @@ function useData(data) {
 
   function updateSelectedTrack(selectedTrack, target) {
     // console.log("selectedTrack", selectedTrack);
-
-        //Turn of audio player, so new song can play without overlapping
-        document.getElementById("player").pause();
-
     dots
       .attr("fill", (d) => {
         if (
@@ -350,9 +346,6 @@ function useData(data) {
       });
 
     target.attr("r", (d) => d.radius * 2).attr("fill", selectedColor);
-
-    document.getElementById("player").play();
-
   }
 
 
