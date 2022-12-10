@@ -37,13 +37,6 @@ function useData(data) {
   const selectedColor = "#4F9D69";
 
   let selectedCategory = "tempo";
-  let selectedTrack = {
-    name: "Title",
-    artists: ["Artists"],
-    id_artists: [],
-    year: "Year",
-    value: null,
-  };
 
   const gap = 0.5;
   const columns_per_bin = 8;
@@ -165,21 +158,20 @@ function useData(data) {
     console.log(`resorted by ${selectedCategory}`, tracks_by_year);
 
     const year_bins = data_g
-      .selectAll("year_bins")
+      .selectAll(".year_bins")
       .data(tracks_by_year, (d) => d.year)
       .join("g")
       .attr(
         "transform",
         (d) => `translate(${timeScale(d.year)}, ${height - 51})`
-      );
+      )
+      .attr("class", "year_bins");
 
     dots = year_bins
-      .selectAll("dots")
+      .selectAll(".dots")
       .data(
         (d) => d.tracks,
-        (t) => {
-          return t.id;
-        }
+        (t) => t.id
       )
       .join(
         (enter) => {
@@ -193,7 +185,9 @@ function useData(data) {
           return u;
         }
       )
+      .attr("class", "dots")
       .attr("r", (d) => radius)
+
       .attr("cx", (d, i) => (i % columns_per_bin) * (radius * 2 + gap) + radius)
       .attr(
         "cy",
