@@ -131,7 +131,7 @@ function useData(data) {
       tooltip_audio.attr("src", preview).attr("type", "audio/mpeg");
     });
 
-  const tooltip_g = tooltip.append("div").attr("id", "2col");
+  const tooltip_g = tooltip.append("div").attr("id", "col2");
   tooltip_g.append("h5").attr("id", "tt-year").text("Year");
   tooltip_g.append("h3").attr("id", "tt-track").text("Title");
   tooltip_g.append("h4").attr("id", "tt-artist").text("Artist");

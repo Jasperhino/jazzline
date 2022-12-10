@@ -48,7 +48,7 @@ h3 {
 font-size: 1.3em;
 font-weight: 300;
 margin: 0px;
-margin-top: 5px;
+margin-top: 7px;
 }
 
 h4 {
@@ -140,7 +140,7 @@ font-weight: 700;
 
 
 #tt-activecat {
-margin-top: 16px;
+margin-top: 34px;
 font-size: 1.0em;
 font-weight: 500;
 text-transform: uppercase;
@@ -163,15 +163,16 @@ margin-top: 20px;
 
 .track-info {
 position: fixed;
-width: 400px;
-left: 34px;
+width: 450px;
+left: 50px;
 top: 100px;
 display: flex;
 background-color: #e6e8e6db;
 padding: 24px;
 padding-right: 20px;
-/* border-radius: 5px; */
-box-shadow: 2px 2px 8px 2px #bebebe4d;
+border-radius: 2px; 
+ box-shadow: 1px 1px 5px 2px #4a4a4a21; 
+/* box-shadow: inset 1px 1px 5px 3px #4a4a4a21; */
 border: solid;
 border-color: #e6e8e6;
 border-width: 1px;
@@ -180,6 +181,11 @@ border-width: 1px;
 
 #col1 {
 margin-right: 20px;
+width: 150px;
+}
+
+#col2{
+  width:300px;
 }
 
 img {
