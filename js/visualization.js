@@ -42,7 +42,7 @@ function useData(data) {
   const height = window.innerHeight;
   const gap = 0.5;
   const year_gap = 3;
-  const radius = height / 400;
+  const radius = height / 340;
   const n_timebins = 100;
 
   const time_bin = d3
