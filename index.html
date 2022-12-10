@@ -32,7 +32,7 @@
   </div>
   <div id="col-left">
     <div>
-      <h1 onclick="openPopup()"><i>Jazzline</i></h1>
+      <h1 id="logo" onclick="openPopup()"><i>Jazzline</i></h1>
     </div>
   </div>
   <form id="form" class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -57,16 +57,12 @@
   <div id="popup-container">
     <h1><i>Jazzline</i></h1>
     <div id="popup">
-        <p class="welcome-text"><b><i>Welcome do Jazzline!</i></b></p>
-        <p class="welcome-text">You are viewing tracks from the most popular jazz artists.</p>
-        <p class="welcome-text">Every dot represents a track retrieved from a Spotify dataset.<br>
-          The timeline highlights all tracks from artists of the track you select.
+        <p id="title"><b><i>Welcome to Jazzline!</i></b></p>
+        <p class="welcome-text">You are viewing tracks from the most popular jazz artists according to Spotify's popularity metrics.</p>
+        <p class="welcome-text">Each dot represents a track retrieved from <a href="https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks?select=artists.csv" target="_blank"><i>this</i></a> dataset.<br>
+          The timeline highlights all tracks from artists of the track you select. You can reorder tracks by selecting different audio features.
         </p>
-        <p class="welcome-text">The tracks are ordered from bottom up according the selected audio feature.
-          For example, if you select <i>Valance</i>, the higher the position of the track, the more positive it is.</p>
-        </p>
-        <p class="welcome-text"></p>
-        <p class="welcome-text"></p>
+        <!-- <p class="welcome-text">For example, if you select <i>Tempo</i>, the higher the position of the track, the faster the track.</p> -->
         <div id="close-bttn" onclick="closePopup()">Got it!</div>
     </div>
   </div>
@@ -78,7 +74,7 @@
     function closePopup() {
       const popup = document.getElementById('popup-container');
       popup.style.display = "none";
-      
+
     }
 
     function openPopup() {

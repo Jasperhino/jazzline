@@ -120,7 +120,6 @@ function useData(data) {
   tooltip_g.append("h4").attr("id", "tt-artist").text("Artist");
   tooltip_g.append("p").attr("id", "tt-activecat").text("Selected Category");
   // tooltip_g.append("p").attr("id", "tt-value").text("Value");
-  // tooltip_g.append("p").attr("id", "tt-songpos").text("Song position"); // this can be deleted later
 
   const distribution_plot = tooltip_g
     .append("svg")
