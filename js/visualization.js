@@ -128,13 +128,7 @@ function useData(data) {
       tooltip.select("img").attr("src", cover);
       const preview = data.preview_url;
       console.log("preview", data.preview_url);
-      if (preview == null) {
-        document.getElementById("player").pause();
-        document.getElementById("player").style.display = "none";
-      } else {
-        tooltip_audio.attr("src", preview).attr("type", "audio/mpeg");
-        document.getElementById("player").style.display = "block";
-      }
+      tooltip_audio.attr("src", preview).attr("type", "audio/mpeg");
     });
 
   const tooltip_g = tooltip.append("div").attr("id", "2col");
