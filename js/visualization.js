@@ -29,20 +29,20 @@ function useData(data) {
   }));
 
   const apiToken =
-    "BQCazgoKwCyjrT2lwkWhIokbQGfmKaItnhqPtj8L_-s0Rgp1g6ZS6pLqyNX9rSQ7FPcSiDLe-hY3lhCY3dTFAaQ_LUS6DBAicoTw0qiERFU301ep5Ivc1edz2dBlH1TzPNfPHMI38S_A6n4SmG44cpLcfoD_gy7Ics5xU4gtb4QQPZ8IMOI3yRe5J2n3Y2A";
+    "BQAxnv1qdx3FHjskv41GKyxhXl7Gi2nctMWQsn6jioAYCOwPrRnYPb4Ai61xUmf1VdAMMTZiRSxiZNa1SL5AWwepOfrls9KL-xtG3LCrEgBvw7DKhwygFVqS7KbrWL4EVQLmA_JNLuMxiUbIT74CnBZbFAqX2mvz32yu8QmBAclf_z5BKv_3FX9qdTvmQgk";
 
   const primaryColor = "#504943";
   const highlightColor = "#8ee6a4";
-  const selectedColor = "#34ad5c";
+  const selectedColor = "#f7f7f7";
 
-  let selectedTrack = data.find((d) => d.id === "4rojclsbFVQvwhxIR0onYr");
-  let selectedCategory = "energy";
+  let selectedCategory = "tempo";
+  let selectedTrack = data.find((d) => d.id === "6YIp0sZ8Ykgt7bzHO62KTb");
 
   // Window size math
   const height = window.innerHeight;
   const gap = 0.5;
   const year_gap = 3;
-  const radius = height / 400;
+  const radius = height / 340;
   const n_timebins = 100;
 
   const time_bin = d3
@@ -112,8 +112,8 @@ function useData(data) {
     .append("img")
     .attr("src", "https://thisartworkdoesnotexist.com/")
     .attr("id", "track-information")
-    .attr("width", 160)
-    .attr("height", 160);
+    .attr("width", 140)
+    .attr("height", 140);
 
   const tooltip_audio = tooltip_g0
     .append("audio")
@@ -121,11 +121,31 @@ function useData(data) {
     .attr("autoplay", true)
     .attr("id", "player");
 
-  const tooltip_g = tooltip.append("div").attr("id", "2col");
+  const url = `https://api.spotify.com/v1/tracks/${selectedTrack.id}`;
+  fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${apiToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const cover = data.album.images[0].url;
+      tooltip.select("img").attr("src", cover);
+      const preview = data.preview_url;
+      console.log("preview", data.preview_url);
+      tooltip_audio.attr("src", preview).attr("type", "audio/mpeg");
+    });
+
+  const tooltip_g = tooltip.append("div").attr("id", "col2");
   tooltip_g.append("h5").attr("id", "tt-year").text("Year");
   tooltip_g.append("h3").attr("id", "tt-track").text("Title");
   tooltip_g.append("h4").attr("id", "tt-artist").text("Artist");
   tooltip_g.append("p").attr("id", "tt-activecat").text("Selected Category");
+  tooltip_g
+    .append("p")
+    .attr("id", "tt-activecatvalue")
+    .text("Selected Category Value");
 
   //Density plot
   const density_width = 400;
@@ -204,7 +224,7 @@ function useData(data) {
     .append("g")
     .call(escala_x)
     .attr("class", "tick")
-    .attr("transform", `translate(0, ${height - 50})`);
+    .attr("transform", `translate(0, ${height - 46})`);
 
   //Group all bins so they can be reordered
   var data_g = d3.select("#viz").append("g").attr("id", "data_group");
@@ -265,9 +285,15 @@ function useData(data) {
           );
       })
       .attr("class", "dots")
-      .attr("r", radius)
+      .attr("r", (d) => applyIfSelected(selectedTrack, d, radius * 1.5, radius))
+      .style("stroke-width", (d) =>
+        applyIfSelected(selectedTrack, d, "0.4", "0")
+      )
       .attr("fill", (d) =>
         applyIfSelected(selectedTrack, d, highlightColor, primaryColor)
+      )
+      .style("stroke", (d) =>
+        applyIfSelected(selectedTrack, d, "#278a48", "red")
       )
       .transition()
       .duration(2000)
@@ -354,7 +380,7 @@ function useData(data) {
         //participates(d, selectedTrack) ? highlightColor : primaryColor
         applyIfSelected(selectedTrack, d, highlightColor, primaryColor)
       )
-      .attr("r", (d) => applyIfSelected(selectedTrack, d, radius * 1.2, radius))
+      .attr("r", (d) => applyIfSelected(selectedTrack, d, radius * 1.5, radius))
       .style("stroke-width", (d) =>
         applyIfSelected(selectedTrack, d, "0.4", "0")
       )
@@ -377,19 +403,25 @@ function useData(data) {
         tooltip.select("img").attr("src", cover);
         const preview = data.preview_url;
         console.log("preview", data.preview_url);
-        tooltip_audio.attr("src", preview).attr("type", "audio/mpeg");
+        if (preview == null) {
+          document.getElementById("player").pause();
+          document.getElementById("player").style.display = "none";
+        } else {
+          tooltip_audio.attr("src", preview).attr("type", "audio/mpeg");
+          document.getElementById("player").style.display = "block";
+        }
       });
   }
 
   function updateTooltip() {
-    tooltip.select("#tt-value").text(`${selectedTrack[selectedCategory]}`);
     tooltip.transition().duration(200).style("display", "block");
     tooltip.select("#tt-year").text(`${selectedTrack.year}`);
     tooltip.select("#tt-track").text(`${selectedTrack.name}`);
     tooltip.select("#tt-artist").text(`${selectedTrack.artists.join(", ")}`);
+    tooltip.select("#tt-activecat").text(`${selectedCategory}`);
     tooltip
-      .select("#tt-activecat")
-      .text(`${selectedCategory}: ${selectedTrack[selectedCategory]}`);
+      .select("#tt-activecatvalue")
+      .text(`${selectedTrack[selectedCategory]}`);
   }
 
   updateSelectedCategory(selectedCategory);
