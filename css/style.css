@@ -43,7 +43,7 @@ h1 {
 }
 
 #logo:hover {
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
 }
 
 h3 {
@@ -86,36 +86,46 @@ p {
 }
 
 .btn-group {
-  /* background: linear-gradient(54deg, rgba(255,255,255,0.9416141456582633) 0%, rgb(254 254 254 / 74%) 37%, rgb(255 255 255 / 64%) 100%); */
-  padding-right: 32px;
-  padding-top: 20px;
-  padding-bottom: 15px;
-  padding-left: 24px;
-  border-radius: 11px;
   display: flex;
   position: fixed;
-  top: 0;
-  right: 0;
-  margin-top: 10px;
-  margin-right: 0px;
+  left: 15px;
+  top: 200px;
+  width: 175px;
+  background-color: rgba(230, 232, 230, 0.76);
+  padding: 26px 8px 22px 22px;
+  border-radius: 4px;
+  box-shadow: rgb(74 74 74 / 13%) 1px 2px 5px 1px;
+  border: 1px solid rgb(230, 232, 230);
+  flex-direction: column;
 }
 
 .btn-label {
   margin: 0;
-  margin-top: 1px;
   margin-left: 10px;
   margin-right: 24px;
+  transition: 0.3s;
 }
 
 .btn-label:hover {
-  border-bottom: 2px solid var(--primary-color);
+  /* border-bottom: 2px solid var(--primary-color); */
+  letter-spacing: 0.5px;
+  color: var(--primary-color);
+  cursor: pointer;
+}
+
+#label {
+  font-size: 1.1em;
+  margin-bottom: 18px;
+  margin-left: 26px;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 .btn {
   font-size: 1.3em;
   display: flex;
   flex-direction: row;
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
 
 .cb {
@@ -158,8 +168,8 @@ audio {
 .track-info {
   position: fixed;
   width: 450px;
-  left: 50px;
-  top: 100px;
+  right: 20px;
+  top: 25px;
   display: flex;
   background-color: #e6e8e6db;
   padding: 24px;
@@ -171,6 +181,7 @@ audio {
   border-color: #e6e8e6;
   border-width: 1px;
 }
+
 
 #col1 {
   margin-right: 20px;
