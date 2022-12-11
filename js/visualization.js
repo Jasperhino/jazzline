@@ -33,6 +33,7 @@ function useData(data) {
   const backgroundColor = "#504943";
   const primaryColor = "#34ad5c";
   const secondaryColor = "#8ee6a4";
+  const selectedTrackColor = "#008b00";
 
   let selectedCategory = "tempo";
   let selectedTrack = data.find((d) => d.id === "6YIp0sZ8Ykgt7bzHO62KTb");
@@ -111,8 +112,8 @@ function useData(data) {
     .append("img")
     .attr("src", "https://thisartworkdoesnotexist.com/")
     .attr("id", "track-information")
-    .attr("width", 140)
-    .attr("height", 140);
+    .attr("width", 120)
+    .attr("height", 120);
 
   const tooltip_audio = tooltip_g0
     .append("audio")
@@ -147,17 +148,18 @@ function useData(data) {
     .text("Selected Category Value");
 
   //Density plot
-  const margin = { top: 50, bottom: 20, left: 10, right: 10 };
-  const density_width = 400 - margin.left - margin.right;
-  const density_height = 220 - margin.top - margin.bottom;
-  const cursor_width = 5;
+  const margin = { top: 0, bottom: 0, left: 10, right: 10 };
+  const density_width = 320 - margin.left - margin.right;
+  const density_height = 130 - margin.top - margin.bottom;
+  const cursor_width = 3;
 
-  const density_plot = tooltip_g
-    .append("svg")
-    .attr("width", density_width + margin.left + margin.right)
-    .attr("height", density_height + margin.top + margin.bottom);
+  const density_plot =
+  tooltip.append("svg")
+    .attr("width", density_width + margin.left + margin.right + 250)
+    .attr("height", density_height + margin.top + margin.bottom + 50);
 
   const density_graph = density_plot
+    .attr("id", "density-container")
     .append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
@@ -193,26 +195,28 @@ function useData(data) {
     .append("path")
     .attr("id", "density-artist-back")
     .attr("class", "density-artist")
-    .attr("opacity", 0.8)
+    .attr("opacity", 0.7)
     .attr("fill", secondaryColor)
-    .attr("stroke", secondaryColor)
-    .attr("stroke-opacity", 1)
+    .attr("stroke", "#33a85a")
     .attr("stroke-width", 1)
     .attr("stroke-linejoin", "round");
 
   density_graph
-    .append("clipPath")
+    // .append("clipPath")
     .attr("id", "clipRect")
     .append("rect")
     .attr("y", 0)
     .attr("width", cursor_width)
-    .attr("height", density_height);
+    .attr("height", density_height)
+    .attr("stroke-width", "0.2px")
+    .attr("stroke", "white")
+    .attr("fill", selectedTrackColor);
 
   const densityXAxis = density_graph.append("g");
 
   const labels = density_plot.append("g");
-  const labels_circle_x = density_width - 80;
-  const labels_text_x = density_width - 70;
+  const labels_circle_x = density_width - 45;
+  const labels_text_x = density_width - 30;
   labels
     .append("circle")
     .attr("cx", labels_circle_x)
@@ -224,33 +228,37 @@ function useData(data) {
     .attr("cx", labels_circle_x)
     .attr("cy", 30)
     .attr("r", 5)
-    .style("fill", primaryColor);
+    .attr("stroke", "white")
+    .attr("stroke-width", 0.5)
+    .style("fill", selectedTrackColor);
   labels
     .append("circle")
     .attr("cx", labels_circle_x)
     .attr("cy", 50)
     .attr("r", 5)
+    .attr("stroke", primaryColor)
+    .attr("stroke-width", 0.5)
     .style("fill", secondaryColor);
   labels
     .append("text")
     .attr("x", labels_text_x)
     .attr("y", 10)
     .text("All Tracks")
-    .style("font-size", "17px")
+    .attr("class", "density-labels")
     .attr("alignment-baseline", "middle");
   labels
     .append("text")
     .attr("x", labels_text_x)
     .attr("y", 30)
-    .text("This Artist")
-    .style("font-size", "17px")
+    .text("This Track")
+    .attr("class", "density-labels")
     .attr("alignment-baseline", "middle");
   labels
     .append("text")
     .attr("x", labels_text_x)
     .attr("y", 50)
-    .text("This Track")
-    .style("font-size", "17px")
+    .text("This Artist/s")
+    .attr("class", "density-labels")
     .attr("alignment-baseline", "middle");
 
   // Timeline x Axis
@@ -315,7 +323,9 @@ function useData(data) {
       .join("circle")
       .on("click", (e, d) => {
         selectedTrack = d;
-        const target = d3.select(e.currentTarget);
+        const target = d3.select(e.currentTarget)
+        .style("stroke", 'red')
+        .style('stroke-weight', '1px');
         target.raise();
         updateSelectedTrack(target);
       })
@@ -332,7 +342,7 @@ function useData(data) {
           .duration("200")
           .attr(
             "r",
-            selectedTrack && d.id === selectedTrack.id ? radius * 3 : radius
+            selectedTrack && d.id === selectedTrack.id ? radius * 2.5 : radius
           );
       })
       .attr("class", "dots")
@@ -349,11 +359,11 @@ function useData(data) {
       .attr("r", (d) =>
         participates(d, selectedTrack) ? radius * 1.2 : radius
       )
-      .style("stroke-width", (d) => (participates(d, selectedTrack) ? 0.4 : 0))
+      .style("stroke-width", (d) => (participates(d, selectedTrack) ? 0.5 : 0))
       .attr("fill", (d) =>
         participates(d, selectedTrack) ? secondaryColor : backgroundColor
       )
-      .style("stroke", (d) => "white");
+      .style("stroke", (d) => primaryColor);
   }
 
   function updateDensityPlot() {
@@ -435,7 +445,7 @@ function useData(data) {
     updateDots();
     updateDensityPlot();
     updateTooltip();
-    target.attr("r", radius * 3).attr("fill", primaryColor);
+    target.attr("r", radius * 2.5).attr("fill", selectedTrackColor);
 
     const url = `https://api.spotify.com/v1/tracks/${selectedTrack.id}`;
     fetch(url, {
