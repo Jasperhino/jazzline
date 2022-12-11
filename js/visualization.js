@@ -172,9 +172,7 @@ function useData(data) {
   tooltip_g0
     .append("img")
     .attr("src", "https://thisartworkdoesnotexist.com/")
-    .attr("id", "track-information")
-    .attr("width", 120)
-    .attr("height", 120);
+    .attr("id", "track-img");
 
   const tooltip_audio = tooltip_g0
     .append("audio")
@@ -200,8 +198,8 @@ function useData(data) {
 
   const tooltip_g = tooltip.append("div").attr("id", "col2");
   tooltip_g.append("h5").attr("id", "tt-year").text("Year");
-  tooltip_g.append("h3").attr("id", "tt-track").text("Title");
   tooltip_g.append("h4").attr("id", "tt-artist").text("Artist");
+  tooltip_g.append("h3").attr("id", "tt-track").text("Title");
   tooltip_g.append("p").attr("id", "tt-activecat").text("Selected Category");
   tooltip_g
     .append("p")
@@ -214,15 +212,19 @@ function useData(data) {
   const density_height = 60 - margin.top - margin.bottom;
   const cursor_width = 3;
 
-  const density_plot = tooltip
+
+
+
+  const density_plot = d3
+    .select(".track-info")
     .append("svg")
     .attr("width", density_width + margin.left + margin.right + 10)
-    .attr("height", density_height + margin.top + margin.bottom + 130);
+    .attr("height", density_height + margin.top + margin.bottom + 100);
 
   const density_graph = density_plot
     .attr("id", "density-container")
     .append("g")
-    .attr("transform", `translate(${margin.left}, ${margin.top + 34})`);
+    .attr("transform", `translate(${margin.left}, ${margin.top + 4})`);
 
   density_graph
     .append("path")
@@ -278,15 +280,15 @@ function useData(data) {
   const labels = density_plot.append("g");
   const labels_circle_x = 10;
   const labels_text_x = 20;
-  const labels_text_y = 134;
+  const labels_text_y = 100;
 
-  labels
-    .append("text")
-    .attr("x", labels_text_x - 15)
-    .attr("y", 7)
-    .text(selectedCategory) // title of density plot
-    .attr("class", "density-title")
-    .attr("alignment-baseline", "middle");
+  // labels
+  //   .append("text")
+  //   .attr("x", labels_text_x - 15)
+  //   .attr("y", 7)
+  //   .text(selectedCategory) // title of density plot
+  //   .attr("class", "density-title")
+  //   .attr("alignment-baseline", "middle");
   labels
     .append("circle")
     .attr("cx", labels_circle_x)
@@ -571,10 +573,10 @@ function useData(data) {
   }
 
   function updateTooltip() {
-    tooltip.transition().duration(200).style("display", "flex");
+    tooltip.transition().duration(200).style("display", "block");
     tooltip.select("#tt-year").text(`${selectedTrack.year}`);
-    tooltip.select("#tt-track").text(`${selectedTrack.name}`);
     tooltip.select("#tt-artist").text(`${selectedTrack.artists.join(", ")}`);
+    tooltip.select("#tt-track").text(`${selectedTrack.name}`);
     tooltip.select("#tt-activecat").text(`${selectedCategory}`);
     tooltip
       .select("#tt-activecatvalue")

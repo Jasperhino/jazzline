@@ -48,24 +48,24 @@ h1 {
 }
 
 h3 {
-  font-size: 1.2em;
-  font-weight: 300;
+  font-size: 1.15em;
+  font-weight: 400;
   margin: 0px;
-  margin-top: 5px;
+  margin-top: 8px;
 }
 
 h4 {
-  font-size: 1.24em;
+  font-size: 1.34em;
   font-weight: 800;
   margin: 0px;
-  margin-top: 5px;
+  margin-top: 8px;
 }
 
 h5 {
-  font-size: 1.1em;
+  font-size: 1.15em;
   font-weight: 800;
   margin: 0px;
-  margin-top: 0px;
+  margin-top: 20px;
 }
 
 p {
@@ -89,12 +89,12 @@ p {
 .btn-group {
   display: flex;
   position: fixed;
-  left: 17px;
+  left: -31px;
   top: 160px;
   width: 150px;
   background-color: var(--bg2color);
-  padding: 24px 24px 29px 18px;
-  border-radius: 10px;
+  padding: 29px 28px 31px 51px;
+  /* border-radius: 10px; */
   box-shadow: rgb(74 74 74 / 13%) 1px 2px 5px 1px;
   border: 1px solid var(--text-color);
   flex-direction: column;
@@ -157,7 +157,7 @@ p {
 }
 
 #tt-activecat {
-  margin-top: 20px;
+  margin-top: 42px;
   font-size: 0.9em;
   font-weight: 500;
   text-transform: uppercase;
@@ -166,28 +166,38 @@ p {
 #tt-activecatvalue {
   margin-top: 2px;
   font-size: 1.1em;
-  margin-bottom: 24px;
+  margin-bottom: 10px;
 }
 
 audio {
-  width: 120px;
+  width: 239px;
   height: 34px;
   margin-top: 20px;
+  margin-left: -18px;
 }
 
+audio::-webkit-media-controls-panel {
+  background-color: var(--bg-color);
+  background-color: var(--bg-color);
+}
+
+
 .track-info {
-  width: 660px;
-  right: 15px;
+  width: 200px;
+  right: -90px;
   top: 15px;
   display: flex;
   background-color: var(--bg2color);
-  padding: 20px;
-  padding-bottom: 10px;
-  padding-right: 10px;
+  padding: 23px 71px 18px 26px;
   /* box-shadow: inset 1px 1px 5px 3px #4a4a4a21; */
-  border-radius: 10px;
+  /* border-radius: 10px; */
   box-shadow: rgb(74 74 74 / 13%) 1px 2px 5px 1px;
   border: 1px solid var(--text-color);
+}
+
+#track-img {
+  width: 200px;
+  height: 200px;
 }
 
 #col1 {
@@ -196,13 +206,13 @@ audio {
 }
 
 #col2 {
-  width: 250px;
-  padding-right: 30px;
+  width: 100%;
 }
 
 img {
   border-radius: 3px;
 }
+
 
 .density-title {
   font-size: 0.9em;
