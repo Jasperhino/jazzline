@@ -1,6 +1,6 @@
 :root {
   --bg-color: #f5f4eb;
-  --bg2color: #f5f4e8f2;
+  --bg2color: #fdfcefed;
   --text-color: #504943;
   --primary-color: #258344;
   --secundary-color: #8ee6a4;
@@ -93,7 +93,7 @@ p {
   top: 160px;
   width: 150px;
   background-color: var(--bg2color);
-  padding: 29px 28px 31px 51px;
+  padding: 29px 20px 31px 42px;
   /* border-radius: 10px; */
   box-shadow: rgb(74 74 74 / 13%) 1px 2px 5px 1px;
   border: 1px solid var(--text-color);
@@ -157,7 +157,7 @@ p {
 }
 
 #tt-activecat {
-  margin-top: 42px;
+  margin-top: 34px;
   font-size: 0.9em;
   font-weight: 500;
   text-transform: uppercase;
@@ -166,7 +166,8 @@ p {
 #tt-activecatvalue {
   margin-top: 2px;
   font-size: 1.1em;
-  margin-bottom: 10px;
+  margin-bottom: 13px;
+  color: var(--primary-color);
 }
 
 audio {
@@ -177,18 +178,20 @@ audio {
 }
 
 audio::-webkit-media-controls-panel {
-  background-color: var(--bg-color);
-  background-color: var(--bg-color);
+  background-color: var(--bg2color);
+  background-color: var(--bg2color);
 }
 
 
 .track-info {
   width: 200px;
+  /* height: auto; */
   right: -90px;
-  top: 15px;
+  top: 40px;
+  /* bottom: 0; */
   display: flex;
   background-color: var(--bg2color);
-  padding: 23px 71px 18px 26px;
+  padding: 22px 120px 20px 22px;
   /* box-shadow: inset 1px 1px 5px 3px #4a4a4a21; */
   /* border-radius: 10px; */
   box-shadow: rgb(74 74 74 / 13%) 1px 2px 5px 1px;

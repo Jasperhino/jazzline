@@ -90,7 +90,7 @@ function useData(data) {
   }));
 
   const apiToken =
-    "BQBtoK6y-Qbx9SzTk4zeCpcrrt1fj-i44uSC57JPRZtqA3YtjeE0N2A1tgUK2vlb6c-jvokVTQb9givbi4ReVKasKfbl2uwJ6j45eIb0kINqjYrs3CkXGb34ue3Q9cEiqHjAdYP3152mCBhHK1FQPRR9NDQvz29YJkWvQk8wcuWXSLGy2uMoB1gpNdxqpVI";
+    "BQAVGDt7eJzSrHkHhOrJlddn42ktbW5d8MANhmsQXMr58iPwrZ-LbGHQnf7GnyWetYdBJPxQIvXXkl8bPXL9FK6H-6ByHRAyNJwy35PfyD_SwZzLTwfNmTMj75kphVTTpqFN6li-ihz6I1zEvuFKueI-DykBto7VXsNotIaVIXtBH2apZhMB5AsfV4-Bh3I";
   const backgroundColor = "#504943";
   const primaryColor = "#34ad5c";
   const secondaryColor = "#8ee6a4";
@@ -208,7 +208,7 @@ function useData(data) {
 
   //Density plot
   const margin = { top: 0, bottom: 0, left: 10, right: 10 };
-  const density_width = 220 - margin.left - margin.right;
+  const density_width = 210 - margin.left - margin.right;
   const density_height = 60 - margin.top - margin.bottom;
   const cursor_width = 3;
 
@@ -219,7 +219,7 @@ function useData(data) {
     .select(".track-info")
     .append("svg")
     .attr("width", density_width + margin.left + margin.right + 10)
-    .attr("height", density_height + margin.top + margin.bottom + 100);
+    .attr("height", density_height + margin.top + margin.bottom + 60);
 
   const density_graph = density_plot
     .attr("id", "density-container")
@@ -258,9 +258,9 @@ function useData(data) {
     .append("path")
     .attr("id", "density-artist-back")
     .attr("class", "density-artist")
-    .style("opacity", 0.7)
-    .attr("fill", secondaryColor)
-    .attr("stroke", "#33a85a")
+    .style("opacity", 0.8)
+    .attr("fill", "#b5ecc3")
+    .attr("stroke", "#8ee6a4")
     .attr("stroke-width", 1)
     .attr("stroke-linejoin", "round");
 
@@ -280,7 +280,7 @@ function useData(data) {
   const labels = density_plot.append("g");
   const labels_circle_x = 10;
   const labels_text_x = 20;
-  const labels_text_y = 100;
+  const labels_text_y = 105;
 
   // labels
   //   .append("text")
@@ -297,16 +297,8 @@ function useData(data) {
     .style("fill", backgroundColor);
   labels
     .append("circle")
-    .attr("cx", labels_circle_x)
-    .attr("cy", labels_text_y + 19)
-    .attr("r", 3)
-    .attr("stroke", selectedTrackColor)
-    .attr("stroke-width", 0.5)
-    .style("fill", selectedTrackColor);
-  labels
-    .append("circle")
-    .attr("cx", labels_circle_x)
-    .attr("cy", labels_text_y + 38)
+    .attr("cx", labels_circle_x + 90)
+    .attr("cy", labels_text_y + 0)
     .attr("r", 3)
     .attr("stroke", primaryColor)
     .attr("stroke-width", 0.5)
@@ -320,15 +312,8 @@ function useData(data) {
     .attr("alignment-baseline", "middle");
   labels
     .append("text")
-    .attr("x", labels_text_x)
-    .attr("y", labels_text_y + 19)
-    .text("This Track")
-    .attr("class", "density-labels")
-    .attr("alignment-baseline", "middle");
-  labels
-    .append("text")
-    .attr("x", labels_text_x)
-    .attr("y", labels_text_y + 38)
+    .attr("x", labels_text_x + 90)
+    .attr("y", labels_text_y + 0)
     .text("This Artist")
     .attr("class", "density-labels")
     .attr("alignment-baseline", "middle");
