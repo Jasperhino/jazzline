@@ -296,7 +296,7 @@ function useData(data) {
         applyIfSelected(selectedTrack, d, "#278a48", "red")
       )
       .transition()
-      .duration(2000)
+      .duration(2400)
       .attr("cx", (d) => d.x)
       .attr("cy", (d) => d.y);
   }
