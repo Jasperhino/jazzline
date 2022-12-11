@@ -1,3 +1,25 @@
+import humanizeDuration from "https://cdn.skypack.dev/humanize-duration";
+
+const human = humanizeDuration.humanizer({
+  language: "shortEn",
+  languages: {
+    shortEn: {
+      y: () => "y",
+      mo: () => "mo",
+      w: () => "w",
+      d: () => "d",
+      h: () => "h",
+      m: () => "m",
+      s: () => "s",
+      ms: () => "ms",
+    },
+  },
+  conjunction: " ",
+  round: true,
+  serialCOMMA: false,
+  spacer: "",
+});
+
 d3.csv("data/tracks_filtered_jazz.csv", (t) => {
   return d3.autoType({
     id: t.id,
@@ -14,6 +36,45 @@ d3.csv("data/tracks_filtered_jazz.csv", (t) => {
     danceability: t.danceability,
   });
 }).then(useData);
+
+const roundPercentage = (d) => Math.round(d * 100).toFixed(1);
+const units = {
+  tempo: {
+    unit: "bpm",
+    format: (d) => `${d.toFixed(1)} bpm`,
+    tickFormat: (d) => `${d}`,
+  },
+  duration: {
+    unit: "ms",
+    format: (d) => `${humanizeDuration(d, { round: true })}`,
+    tickFormat: (d) => `${human(d)}`,
+  },
+  loudness: {
+    unit: "dB",
+    format: (d) => `${d.toFixed(1)} dB`,
+    tickFormat: (d) => `${d}`,
+  },
+  energy: {
+    unit: "%",
+    format: (d) => `${roundPercentage(d)} %`,
+    tickFormat: (d) => `${d * 100}`,
+  },
+  valence: {
+    unit: "%",
+    format: (d) => `${roundPercentage(d)} %`,
+    tickFormat: (d) => `${d * 100}`,
+  },
+  acousticness: {
+    unit: "%",
+    format: (d) => `${roundPercentage(d)} %`,
+    tickFormat: (d) => `${d * 100}`,
+  },
+  danceability: {
+    unit: "%",
+    format: (d) => `${roundPercentage(d)} %`,
+    tickFormat: (d) => `${d * 100}`,
+  },
+};
 
 function useData(data) {
   data = data.map((d) => ({
@@ -365,21 +426,28 @@ function useData(data) {
 
     densityXAxis
       .attr("transform", `translate(0, ${density_height})`)
-      .call(d3.axisBottom(density_x));
+      .call(
+        d3
+          .axisBottom(density_x)
+          .ticks(5)
+          .tickFormat(units[selectedCategory].tickFormat)
+      );
+
+    const values = data.map((d) => d[selectedCategory]);
 
     const kde = kernelDensityEstimator(
       kernelEpanechnikov(7),
-      density_x.ticks(40)
+      density_x.ticks(50)
     );
+    const density = kde(values);
 
-    const density = kde(data.map((d) => d[selectedCategory]));
-    const selectedTracks = data
+    const valuesArtist = data
       .filter((d) => participates(d, selectedTrack))
       .map((d) => d[selectedCategory]);
 
-    const density_artist = kde(selectedTracks);
+    const density_artist = kde(valuesArtist);
 
-    console.log("selectedTracks", selectedTracks);
+    console.log("selectedTracks", valuesArtist);
     console.log("artist density", density_artist);
 
     const density_min = d3.min(density, (d) => d[1]);
@@ -469,7 +537,9 @@ function useData(data) {
     tooltip.select("#tt-activecat").text(`${selectedCategory}`);
     tooltip
       .select("#tt-activecatvalue")
-      .text(`${selectedTrack[selectedCategory]}`);
+      .text(
+        `${units[selectedCategory].format(selectedTrack[selectedCategory])}`
+      );
   }
 
   updateSelectedCategory(selectedCategory);
@@ -495,6 +565,7 @@ function kernelDensityEstimator(kernel, X) {
     });
   };
 }
+
 function kernelEpanechnikov(k) {
   return function (v) {
     return Math.abs((v /= k)) <= 1 ? (0.75 * (1 - v * v)) / k : 0;
