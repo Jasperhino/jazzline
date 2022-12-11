@@ -31,9 +31,9 @@ function useData(data) {
   const apiToken =
     "BQAxnv1qdx3FHjskv41GKyxhXl7Gi2nctMWQsn6jioAYCOwPrRnYPb4Ai61xUmf1VdAMMTZiRSxiZNa1SL5AWwepOfrls9KL-xtG3LCrEgBvw7DKhwygFVqS7KbrWL4EVQLmA_JNLuMxiUbIT74CnBZbFAqX2mvz32yu8QmBAclf_z5BKv_3FX9qdTvmQgk";
 
-  const primaryColor = "#504943";
-  const highlightColor = "#8ee6a4";
-  const selectedColor = "#f7f7f7";
+  const backgroundColor = "#504943";
+  const primaryColor = "#34ad5c";
+  const secondaryColor = "#8ee6a4";
 
   let selectedCategory = "tempo";
   let selectedTrack = data.find((d) => d.id === "6YIp0sZ8Ykgt7bzHO62KTb");
@@ -148,62 +148,111 @@ function useData(data) {
     .text("Selected Category Value");
 
   //Density plot
-  const density_width = 400;
-  const density_height = 200;
+  const margin = { top: 50, bottom: 20, left: 10, right: 10 };
+  const density_width = 400 - margin.left - margin.right;
+  const density_height = 220 - margin.top - margin.bottom;
   const cursor_width = 5;
 
   const density_plot = tooltip_g
     .append("svg")
-    .attr("width", density_width)
-    .attr("height", density_height)
-    .attr("viewBox", [0, 0, density_width, density_height]);
+    .attr("width", density_width + margin.left + margin.right)
+    .attr("height", density_height + margin.top + margin.bottom);
 
-  density_plot
+  const density_graph = density_plot
+    .append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+  density_graph
     .append("path")
     .attr("id", "density-back")
     .attr("class", "density")
-    .attr("fill", "#000")
-    .attr("stroke", "#000")
-    .attr("opacity", ".8")
+    .attr("opacity", 1)
+    .attr("fill", primaryColor)
     .attr("stroke-linejoin", "round")
     .style("clip-path", "url(#clipRect)");
 
-  density_plot
+  density_graph
     .append("path")
     .attr("id", "density-back")
     .attr("class", "density")
-    .attr("fill", "#69b3a2")
-    .attr("opacity", ".8")
-    .attr("stroke", "#000")
+    .attr("opacity", 1)
+    .attr("fill", backgroundColor)
+    .attr("stroke", backgroundColor)
     .attr("stroke-width", 1)
     .attr("stroke-linejoin", "round");
 
-  density_plot
+  density_graph
     .append("path")
     .attr("id", "density-artist-front")
     .attr("class", "density-artist")
-    .attr("fill", "#000")
-    .attr("stroke", "#000")
+    .attr("opacity", 1)
+    .attr("fill", primaryColor)
     .attr("stroke-linejoin", "round")
     .style("clip-path", "url(#clipRect)");
 
-  density_plot
+  density_graph
     .append("path")
     .attr("id", "density-artist-back")
     .attr("class", "density-artist")
-    .attr("fill", "purple")
-    .attr("opacity", ".8")
-    .attr("stroke", "#000")
+    .attr("opacity", 0.8)
+    .attr("fill", secondaryColor)
+    .attr("stroke", secondaryColor)
+    .attr("stroke-opacity", 1)
     .attr("stroke-width", 1)
     .attr("stroke-linejoin", "round");
 
-  density_plot
+  density_graph
     .append("clipPath")
     .attr("id", "clipRect")
     .append("rect")
     .attr("y", 0)
     .attr("width", cursor_width)
     .attr("height", density_height);
+
+  const densityXAxis = density_graph.append("g");
+
+  const labels = density_plot.append("g");
+  const labels_circle_x = density_width - 80;
+  const labels_text_x = density_width - 70;
+  labels
+    .append("circle")
+    .attr("cx", labels_circle_x)
+    .attr("cy", 10)
+    .attr("r", 5)
+    .style("fill", backgroundColor);
+  labels
+    .append("circle")
+    .attr("cx", labels_circle_x)
+    .attr("cy", 30)
+    .attr("r", 5)
+    .style("fill", primaryColor);
+  labels
+    .append("circle")
+    .attr("cx", labels_circle_x)
+    .attr("cy", 50)
+    .attr("r", 5)
+    .style("fill", secondaryColor);
+  labels
+    .append("text")
+    .attr("x", labels_text_x)
+    .attr("y", 10)
+    .text("All Tracks")
+    .style("font-size", "17px")
+    .attr("alignment-baseline", "middle");
+  labels
+    .append("text")
+    .attr("x", labels_text_x)
+    .attr("y", 30)
+    .text("This Artist")
+    .style("font-size", "17px")
+    .attr("alignment-baseline", "middle");
+  labels
+    .append("text")
+    .attr("x", labels_text_x)
+    .attr("y", 50)
+    .text("This Track")
+    .style("font-size", "17px")
+    .attr("alignment-baseline", "middle");
 
   // Timeline x Axis
   var svg_time = d3
@@ -219,8 +268,8 @@ function useData(data) {
     .ticks(25)
     .tickFormat(d3.format("^20"));
 
-  //Append group and insert axis
-  var x_axis = svg_time
+  //Append group and insert X axis
+  svg_time
     .append("g")
     .call(escala_x)
     .attr("class", "tick")
@@ -290,7 +339,7 @@ function useData(data) {
         applyIfSelected(selectedTrack, d, "0.4", "0")
       )
       .attr("fill", (d) =>
-        applyIfSelected(selectedTrack, d, highlightColor, primaryColor)
+        applyIfSelected(selectedTrack, d, secondaryColor, backgroundColor)
       )
       .style("stroke", (d) =>
         applyIfSelected(selectedTrack, d, "#278a48", "red")
@@ -305,7 +354,12 @@ function useData(data) {
     const density_x = d3
       .scaleLinear()
       .domain(d3.extent(data, (d) => d[selectedCategory]))
+      .nice()
       .range([0, density_width]);
+
+    densityXAxis
+      .attr("transform", `translate(0, ${density_height})`)
+      .call(d3.axisBottom(density_x));
 
     const kde = kernelDensityEstimator(
       kernelEpanechnikov(7),
@@ -378,7 +432,7 @@ function useData(data) {
     d3.selectAll(".dots")
       .attr("fill", (d) =>
         //participates(d, selectedTrack) ? highlightColor : primaryColor
-        applyIfSelected(selectedTrack, d, highlightColor, primaryColor)
+        applyIfSelected(selectedTrack, d, secondaryColor, backgroundColor)
       )
       .attr("r", (d) => applyIfSelected(selectedTrack, d, radius * 1.5, radius))
       .style("stroke-width", (d) =>
@@ -388,7 +442,7 @@ function useData(data) {
         applyIfSelected(selectedTrack, d, "#278a48", "red")
       );
 
-    target.attr("r", radius * 2).attr("fill", selectedColor);
+    target.attr("r", radius * 2).attr("fill", secondaryColor);
 
     const url = `https://api.spotify.com/v1/tracks/${selectedTrack.id}`;
     fetch(url, {
