@@ -90,11 +90,11 @@ function useData(data) {
   }));
 
   const apiToken =
-    "BQDMpqetwXNPM4UuKW4nDIURzTyxFpHdf5MF44QHUdvawMNPZn635uE9bi1RgdsD22GMYp5R5lB9MWWA1tL4PP8BVvswqQ-Gb18pta4dD0wXLso2wk4YJ4zsADiQLzR0HcMI3dcsW96PwQYECeQNzlMfoB23XMWBaGWsD01caNk";
+    "BQA8Bla64oP86hIl037Z7o69k8tP7IoUTDbOs8l7o6ojUAjCuEgu0XVMJr4Q3jYn_UGlUESk-10VpNnKKXXMhsrALGaLz1DQ-blKo41Ze__mJ4bzu1G4F3LSTIjS-ShLrBvicrmvw9MYNWh5X5r8-G0bl5Ir1joIFcxHRa3twqRxSyH5uuHXMmQobEd36AA";
   const backgroundColor = "#504943";
   const primaryColor = "#34ad5c";
   const secondaryColor = "#8ee6a4";
-  const selectedTrackColor = "#0daa41";
+  const selectedTrackColor = "#0aa72c";
 
   let selectedCategory = "tempo";
   let selectedTrack = data.find((d) => d.id === "6YIp0sZ8Ykgt7bzHO62KTb");
@@ -296,7 +296,7 @@ function useData(data) {
   labels
     .append("circle")
     .attr("cx", labels_circle_x)
-    .attr("cy", labels_text_y + 18)
+    .attr("cy", labels_text_y + 19)
     .attr("r", 3)
     .attr("stroke", selectedTrackColor)
     .attr("stroke-width", 0.5)
@@ -304,7 +304,7 @@ function useData(data) {
   labels
     .append("circle")
     .attr("cx", labels_circle_x)
-    .attr("cy", labels_text_y + 36)
+    .attr("cy", labels_text_y + 38)
     .attr("r", 3)
     .attr("stroke", primaryColor)
     .attr("stroke-width", 0.5)
@@ -319,14 +319,14 @@ function useData(data) {
   labels
     .append("text")
     .attr("x", labels_text_x)
-    .attr("y", labels_text_y + 18)
+    .attr("y", labels_text_y + 19)
     .text("This Track")
     .attr("class", "density-labels")
     .attr("alignment-baseline", "middle");
   labels
     .append("text")
     .attr("x", labels_text_x)
-    .attr("y", labels_text_y + 36)
+    .attr("y", labels_text_y + 38)
     .text("This Artist")
     .attr("class", "density-labels")
     .attr("alignment-baseline", "middle");

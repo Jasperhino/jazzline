@@ -89,11 +89,11 @@ p {
   display: flex;
   position: fixed;
   left: 17px;
-  top: 180px;
-  width: 190px;
+  top: 160px;
+  width: 155px;
   background-color: rgba(230, 232, 230, 0.90);
-  padding: 24px 24px 22px 20px;
-  border-radius: 5px;
+  padding: 24px 24px 22px 22px;
+  border-radius: 10px;
   box-shadow: rgb(74 74 74 / 13%) 1px 2px 5px 1px;
   border: 1px solid var(--text-color);
   flex-direction: column;
@@ -174,19 +174,17 @@ audio {
 }
 
 .track-info {
-  position: fixed;
   width: 660px;
-  right: 20px;
-  top: 25px;
+  right: 15px;
+  top: 15px;
   display: flex;
   background-color: #e6e8e6db;
-  padding: 24px;
+  padding: 20px;
   padding-bottom: 10px;
-  padding-right: 20px;
+  padding-right: 10px;
   /* box-shadow: inset 1px 1px 5px 3px #4a4a4a21; */
-
   background-color: rgba(230, 232, 230, 0.9);
-  border-radius: 4px;
+  border-radius: 10px;
   box-shadow: rgb(74 74 74 / 13%) 1px 2px 5px 1px;
   border: 1px solid var(--text-color);
 }
