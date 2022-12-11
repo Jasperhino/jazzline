@@ -29,8 +29,7 @@ function useData(data) {
   }));
 
   const apiToken =
-    "BQAoKlSVA1wgQZd4xAJepBNYWiesWKwagP0zgZLxzZlXj3NFUJvQAGFU3DAK4xxPbrC8aesIhdfc_0WW3OsFerjLyt9_d9HvylNS6Une8indZh54rwoFpgPYMl1e_AQZXgTZasoGr9zyAiGWi1LQYJYGdv7y60ioLpvocGjiZz50XKjWTAtvN8Qxx4rR4Ok";
-
+    "BQDMpqetwXNPM4UuKW4nDIURzTyxFpHdf5MF44QHUdvawMNPZn635uE9bi1RgdsD22GMYp5R5lB9MWWA1tL4PP8BVvswqQ-Gb18pta4dD0wXLso2wk4YJ4zsADiQLzR0HcMI3dcsW96PwQYECeQNzlMfoB23XMWBaGWsD01caNk";
   const backgroundColor = "#504943";
   const primaryColor = "#34ad5c";
   const secondaryColor = "#8ee6a4";
@@ -316,10 +315,13 @@ function useData(data) {
       .join("circle")
       .on("click", (e, d) => {
         selectedTrack = d;
-        updateSelectedTrack(d, d3.select(e.currentTarget));
+        const target = d3.select(e.currentTarget);
+        target.raise();
+        updateSelectedTrack(target);
       })
       .on("mouseover", (e, d) => {
         d3.select(e.currentTarget)
+          .raise()
           .transition()
           .duration("200")
           .attr("r", radius * 2.5);
@@ -330,24 +332,28 @@ function useData(data) {
           .duration("200")
           .attr(
             "r",
-            selectedTrack && d.id === selectedTrack.id ? radius * 2 : radius
+            selectedTrack && d.id === selectedTrack.id ? radius * 3 : radius
           );
       })
       .attr("class", "dots")
-      .attr("r", (d) => applyIfSelected(selectedTrack, d, radius * 1.3, radius))
-      .style("stroke-width", (d) =>
-        applyIfSelected(selectedTrack, d, "0.4", "0")
-      )
-      .attr("fill", (d) =>
-        applyIfSelected(selectedTrack, d, secondaryColor, backgroundColor)
-      )
-      .style("stroke", (d) =>
-        applyIfSelected(selectedTrack, d, "#278a48", "red")
-      )
       .transition()
       .duration(2400)
       .attr("cx", (d) => d.x)
       .attr("cy", (d) => d.y);
+
+    updateDots();
+  }
+
+  function updateDots() {
+    d3.selectAll(".dots")
+      .attr("r", (d) =>
+        participates(d, selectedTrack) ? radius * 1.2 : radius
+      )
+      .style("stroke-width", (d) => (participates(d, selectedTrack) ? 0.4 : 0))
+      .attr("fill", (d) =>
+        participates(d, selectedTrack) ? secondaryColor : backgroundColor
+      )
+      .style("stroke", (d) => "white");
   }
 
   function updateDensityPlot() {
@@ -425,24 +431,11 @@ function useData(data) {
       .attr("x", density_x(selectedTrack[selectedCategory]) - cursor_width / 2);
   }
 
-  function updateSelectedTrack() {
+  function updateSelectedTrack(target) {
+    updateDots();
     updateDensityPlot();
     updateTooltip();
-
-    d3.selectAll(".dots")
-      .attr("fill", (d) =>
-        //participates(d, selectedTrack) ? highlightColor : primaryColor
-        applyIfSelected(selectedTrack, d, secondaryColor, backgroundColor)
-      )
-      .attr("r", (d) => applyIfSelected(selectedTrack, d, radius * 1.5, radius))
-      .style("stroke-width", (d) =>
-        applyIfSelected(selectedTrack, d, "0.4", "0")
-      )
-      .style("stroke", (d) =>
-        applyIfSelected(selectedTrack, d, "#278a48", "red")
-      );
-
-    target.attr("r", radius * 2).attr("fill", secondaryColor);
+    target.attr("r", radius * 3).attr("fill", primaryColor);
 
     const url = `https://api.spotify.com/v1/tracks/${selectedTrack.id}`;
     fetch(url, {
@@ -457,12 +450,13 @@ function useData(data) {
         tooltip.select("img").attr("src", cover);
         const preview = data.preview_url;
         console.log("preview", data.preview_url);
+        const player = document.getElementById("player");
         if (preview == null) {
-          document.getElementById("player").pause();
-          document.getElementById("player").style.display = "none";
+          player.pause();
+          player.style.display = "none";
         } else {
           tooltip_audio.attr("src", preview).attr("type", "audio/mpeg");
-          document.getElementById("player").style.display = "block";
+          player.style.display = "block";
         }
       });
   }
