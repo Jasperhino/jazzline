@@ -91,7 +91,7 @@ p {
   left: 15px;
   top: 180px;
   width: 180px;
-  background-color: rgba(230, 232, 230, 0.90);
+  background-color: rgba(230, 232, 230, 0.9);
   padding: 15px 0px 13px 18px;
   border-radius: 5px;
   box-shadow: rgb(74 74 74 / 13%) 1px 2px 5px 1px;
@@ -168,7 +168,7 @@ audio {
 
 .track-info {
   position: fixed;
-  width: 450px;
+  width: 850px;
   right: 20px;
   top: 25px;
   display: flex;
@@ -177,12 +177,11 @@ audio {
   padding-right: 20px;
   /* box-shadow: inset 1px 1px 5px 3px #4a4a4a21; */
 
-  background-color: rgba(230, 232, 230, 0.90);
+  background-color: rgba(230, 232, 230, 0.9);
   border-radius: 4px;
   box-shadow: rgb(74 74 74 / 13%) 1px 2px 5px 1px;
   border: 1px solid var(--text-color);
 }
-
 
 #col1 {
   margin-right: 20px;
