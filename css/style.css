@@ -92,7 +92,7 @@ p {
   top: 200px;
   width: 190px;
   background-color: rgba(230, 232, 230, 0.90);
-  padding: 31px 0px 24px 26px;
+  padding: 24px 0px 21px 24px;
   border-radius: 4px;
   box-shadow: rgb(74 74 74 / 13%) 1px 2px 5px 1px;
   border: 1px solid var(--text-color);
@@ -102,7 +102,7 @@ p {
 .btn-label {
   margin: 0;
   margin-left: 19px;
-  margin-right: 24px;
+  margin-right: 25px;
   transition: 0.3s;
 }
 
@@ -116,7 +116,7 @@ p {
 #label {
   font-size: 1.1em;
   margin-bottom: 18px;
-  margin-left: 26px;
+  margin-left: 35px;
   font-weight: 600;
   text-transform: uppercase;
 }
@@ -361,13 +361,13 @@ a:hover {
 
 @keyframes progresswave {
   from {
-    border: var(--pwb) rgba(0, 0, 0, 0.5) solid;
+    border: var(--pwb) rgba(80, 73, 67, 0.5) solid;
     width: calc(var(--pwb) * 2);
     height: calc(var(--pwb) * 2);
     border-radius: calc(var(--pwb) * 2);
   }
   to {
-    border: var(--pwb) rgba(0, 0, 0, 0) solid;
+    border: var(--pwb) rgba(80, 73, 67, 0) solid;
     width: var(--pwd);
     height: var(--pwd);
     border-radius: var(--pwd);

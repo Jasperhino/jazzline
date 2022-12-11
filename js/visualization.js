@@ -53,7 +53,7 @@ function useData(data) {
 
   const max_bin_size = d3.max(time_bins, (d) => d.length);
   const columns_per_bin = Math.ceil(
-    ((max_bin_size * radius * 2 + gap) / height) * 1.5
+    ((max_bin_size * radius * 2 + gap) / height) * 1.4
   );
   const width =
     time_bins.length * (columns_per_bin * (radius * 2 + gap) + year_gap);
