@@ -208,15 +208,15 @@ function useData(data) {
 
   //Density plot
   const margin = { top: 0, bottom: 0, left: 10, right: 10 };
-  const density_width = 210 - margin.left - margin.right;
-  const density_height = 60 - margin.top - margin.bottom;
+  const density_width = 240 - margin.left - margin.right;
+  const density_height = 70 - margin.top - margin.bottom;
   const cursor_width = 3;
 
 
   const density_plot = d3
     .select(".track-info")
     .append("svg")
-    .attr("width", density_width + margin.left + margin.right + 10)
+    .attr("width", density_width + margin.left + margin.right + 3)
     .attr("height", density_height + margin.top + margin.bottom + 60);
 
   const density_graph = density_plot
@@ -248,7 +248,7 @@ function useData(data) {
     .attr("id", "density-artist-front")
     .attr("class", "density-artist")
     .style("opacity", 0.2)
-    .attr("fill", primaryColor)
+    .attr("fill", "#258344")
     .attr("stroke-linejoin", "round")
     .style("clip-path", "url(#clipRect)");
 
@@ -271,7 +271,7 @@ function useData(data) {
     .attr("height", density_height)
     .attr("stroke-width", "0.2px")
     .attr("stroke", "white")
-    .attr("fill", selectedTrackColor);
+    .attr("fill", "#258344");
 
   const densityXAxis = density_graph.append("g");
 
@@ -295,12 +295,20 @@ function useData(data) {
     .style("fill", backgroundColor);
   labels
     .append("circle")
-    .attr("cx", labels_circle_x + 90)
+    .attr("cx", labels_circle_x + 80)
     .attr("cy", labels_text_y + 0)
     .attr("r", 3)
     .attr("stroke", primaryColor)
     .attr("stroke-width", 0.5)
     .style("fill", secondaryColor);
+    labels
+  .append("circle")
+    .attr("cx", labels_circle_x + 160)
+    .attr("cy", labels_text_y + 0)
+    .attr("r", 3)
+    .attr("stroke", selectedCategory)
+    .attr("stroke-width", 0.5)
+    .style("fill", "#258344");
   labels
     .append("text")
     .attr("x", labels_text_x)
@@ -310,9 +318,16 @@ function useData(data) {
     .attr("alignment-baseline", "middle");
   labels
     .append("text")
-    .attr("x", labels_text_x + 90)
+    .attr("x", labels_text_x + 78)
     .attr("y", labels_text_y + 0)
     .text("This Artist")
+    .attr("class", "density-labels")
+    .attr("alignment-baseline", "middle");
+  labels
+    .append("text")
+    .attr("x", labels_text_x + 158)
+    .attr("y", labels_text_y + 0)
+    .text("This Track")
     .attr("class", "density-labels")
     .attr("alignment-baseline", "middle");
 

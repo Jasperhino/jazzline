@@ -10,22 +10,28 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Crimson Pro", serif;
-  background-color: var(--bg-color);
+  /* background-color: var(--bg-color); */
   color: var(--text-color);
   overflow-y: hidden;
 }
 
 #fixed-container {
+  background-color: var(--bg-color);
+
   /*viz is inside fixed-container > scrollable > viz */
 }
 
 #scrollable {
   width: 100%;
   height: 100%;
+  background-color: var(--bg-color);
+
 }
 
 #viz {
   /*id of the viz */
+  background-color: var(--bg-color);
+
 }
 
 h1,
@@ -36,11 +42,12 @@ h5 {
 }
 
 h1 {
-  font-size: 3.0em;
+  font-size: 2.7em;
   font-weight: 800;
   cursor: pointer;
   transition: 0.3s;
-  z-index: 2000;
+  z-index: 3000;
+  letter-spacing: -1px;
 }
 
 #logo:hover {
@@ -49,7 +56,7 @@ h1 {
 
 h3 {
   font-size: 1.15em;
-  font-weight: 400;
+  font-weight: 500;
   margin: 0px;
   margin-top: 8px;
 }
@@ -69,7 +76,7 @@ h5 {
 }
 
 p {
-  font-size: 1.1em;
+  font-size: 1.0.5em;
   font-weight: 800;
   margin: 0px;
   margin-top: 5px;
@@ -90,14 +97,16 @@ p {
   display: flex;
   position: fixed;
   left: -31px;
-  top: 170px;
+  bottom: -4vh;
+  height: 99vh;
   width: 165px;
   background-color: var(--bg2color);
-  padding: 30px 30px 34px 44px;
+  padding: 30px 25px 55px 44px;
   /* border-radius: 10px; */
   box-shadow: rgb(74 74 74 / 13%) 1px 2px 5px 1px;
-  border: 1px solid var(--text-color);
+  /* border: 1px solid var(--text-color); */
   flex-direction: column;
+  justify-content: flex-end;
 }
 
 .description {
@@ -123,7 +132,7 @@ p {
 
 #label {
   font-size: 1em;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.1px;
   margin-bottom: 5px;
   margin-left: 24px;
   font-weight: 600;
@@ -171,7 +180,7 @@ p {
 }
 
 audio {
-  width: 239px;
+  width: 238px;
   height: 34px;
   margin-top: 20px;
   margin-left: -18px;
@@ -184,32 +193,32 @@ audio::-webkit-media-controls-panel {
 
 
 #track-info-wrapper {
-  /* position: fixed;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  display: flex; */
-}
-
-.track-info {
-  width: 190px;
-  /* height: auto; */
+  position: fixed;
+  width: 230px;
+  height: 94vh;
   right: -90px;
-  top: 40px;
+  top: -1px;
   /* bottom: 0; */
   display: flex;
   background-color: var(--bg2color);
-  padding: 24px 120px 22px 24px;
+  padding: 20px 124px 20px 24px;
   /* box-shadow: inset 1px 1px 5px 3px #4a4a4a21; */
   /* border-radius: 10px; */
   box-shadow: rgb(74 74 74 / 13%) 1px 2px 5px 1px;
-  border: 1px solid var(--text-color);
+  /* border: 1px solid var(--text-color); */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.track-info {
+
 }
 
 #track-img {
-  width: 190px;
-  height: 190px;
-  padding:4px;
+  width: 230px;
+  height: 230px;
+  padding:2px;
 }
 
 #col1 {
@@ -218,7 +227,7 @@ audio::-webkit-media-controls-panel {
 }
 
 #col2 {
-  width: 100%;
+  width: 220px;
 }
 
 img {
@@ -343,7 +352,7 @@ strong {
   margin: auto;
   text-align: center;
   align-items: center;
-  padding-right: 80px;
+  padding-right: 100px;
   line-height: 30px;
 }
 
