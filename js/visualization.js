@@ -214,8 +214,8 @@ function useData(data) {
   const density_height = 60 - margin.top - margin.bottom;
   const cursor_width = 3;
 
-  const density_plot =
-  tooltip.append("svg")
+  const density_plot = tooltip
+    .append("svg")
     .attr("width", density_width + margin.left + margin.right + 10)
     .attr("height", density_height + margin.top + margin.bottom + 130);
 
@@ -277,16 +277,16 @@ function useData(data) {
 
   const labels = density_plot.append("g");
   const labels_circle_x = 10;
-  const labels_text_x =  20;
-  const labels_text_y =  134;
+  const labels_text_x = 20;
+  const labels_text_y = 134;
 
   labels
-  .append("text")
-  .attr("x", labels_text_x - 15)
-  .attr("y", 7)
-  .text(selectedCategory) // title of density plot
-  .attr("class", "density-title")
-  .attr("alignment-baseline", "middle");
+    .append("text")
+    .attr("x", labels_text_x - 15)
+    .attr("y", 7)
+    .text(selectedCategory) // title of density plot
+    .attr("class", "density-title")
+    .attr("alignment-baseline", "middle");
   labels
     .append("circle")
     .attr("cx", labels_circle_x)
@@ -392,13 +392,12 @@ function useData(data) {
       )
       .join("circle")
       .attr("r", radius * 1.5)
-    .attr("fill", "white")
-    .style("stroke", backgroundColor)
-    .style("stroke-width", "3px")
+      .attr("fill", "white")
+      .style("stroke", backgroundColor)
+      .style("stroke-width", "3px")
       .on("click", (e, d) => {
         selectedTrack = d;
-        const target = d3.select(e.currentTarget)
-        .style('stroke-width', '1px');
+        const target = d3.select(e.currentTarget).style("stroke-width", "1px");
         target.raise();
         updateSelectedTrack(target);
       })
@@ -425,49 +424,21 @@ function useData(data) {
       .attr("cy", (d) => d.y);
 
     updateDots();
-    
 
     // Maybe just leave it like this to record the video and we change it after?
     document.getElementById(selectedCategory).style.display = "block";
 
-    if(selectedCategory == "tempo") {
-      document.getElementById("valence").style.display = "none";
-      document.getElementById("energy").style.display = "none";
-      document.getElementById("acousticness").style.display = "none";
-      document.getElementById("danceability").style.display = "none";
-      document.getElementById("loudness").style.display = "none";
-    } else if(selectedCategory == "valence") {
-      document.getElementById("tempo").style.display = "none";
-      document.getElementById("energy").style.display = "none";
-      document.getElementById("acousticness").style.display = "none";
-      document.getElementById("danceability").style.display = "none";
-      document.getElementById("loudness").style.display = "none";
-    } else if(selectedCategory == "energy") {
-      document.getElementById("tempo").style.display = "none";
-      document.getElementById("valence").style.display = "none";
-      document.getElementById("acousticness").style.display = "none";
-      document.getElementById("danceability").style.display = "none";
-      document.getElementById("loudness").style.display = "none";
-    } else if(selectedCategory == "acousticness") {
-      document.getElementById("tempo").style.display = "none";
-      document.getElementById("valence").style.display = "none";
-      document.getElementById("energy").style.display = "none";
-      document.getElementById("danceability").style.display = "none";
-      document.getElementById("loudness").style.display = "none";
-    } else if(selectedCategory == "danceability") {
-      document.getElementById("tempo").style.display = "none";
-      document.getElementById("valence").style.display = "none";
-      document.getElementById("energy").style.display = "none";
-      document.getElementById("acousticness").style.display = "none";
-      document.getElementById("loudness").style.display = "none";
-    } else if(selectedCategory == "loudness") {
-      document.getElementById("tempo").style.display = "none";
-      document.getElementById("valence").style.display = "none";
-      document.getElementById("energy").style.display = "none";
-      document.getElementById("acousticness").style.display = "none";
-      document.getElementById("danceability").style.display = "none";
-    }
-
+    [
+      "tempo",
+      "valence",
+      "energy",
+      "acousticness",
+      "danceability",
+      "loudness",
+    ].forEach((category) => {
+      document.getElementById(category).style.display =
+        category === selectedCategory ? "block " : "none";
+    });
   }
 
   function updateDots() {
@@ -568,10 +539,11 @@ function useData(data) {
     updateDots();
     updateDensityPlot();
     updateTooltip();
-    target.attr("r", radius * 1.5)
-    .attr("fill", primaryColor)
-    .style("stroke", backgroundColor)
-    .style("stroke-width", "3px");
+    target
+      .attr("r", radius * 1.5)
+      .attr("fill", primaryColor)
+      .style("stroke", backgroundColor)
+      .style("stroke-width", "3px");
 
     const url = `https://api.spotify.com/v1/tracks/${selectedTrack.id}`;
     fetch(url, {
@@ -609,7 +581,6 @@ function useData(data) {
         `${units[selectedCategory].format(selectedTrack[selectedCategory])}`
       );
     tooltip.select(".density-title").text(`${selectedCategory}`);
-
   }
 
   updateSelectedCategory(selectedCategory);
