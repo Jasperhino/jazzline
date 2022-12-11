@@ -425,9 +425,6 @@ function useData(data) {
 
     updateDots();
 
-    // Maybe just leave it like this to record the video and we change it after?
-    document.getElementById(selectedCategory).style.display = "block";
-
     [
       "tempo",
       "valence",
