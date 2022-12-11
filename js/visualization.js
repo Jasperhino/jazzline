@@ -283,21 +283,21 @@ function useData(data) {
   labels
   .append("text")
   .attr("x", labels_text_x - 15)
-  .attr("y", 10)
-  .text(selectedCategory + " Density Plot")
+  .attr("y", 7)
+  .text(selectedCategory) // title of density plot
   .attr("class", "density-title")
   .attr("alignment-baseline", "middle");
   labels
     .append("circle")
     .attr("cx", labels_circle_x)
     .attr("cy", labels_text_y + 0)
-    .attr("r", 4)
+    .attr("r", 3)
     .style("fill", backgroundColor);
   labels
     .append("circle")
     .attr("cx", labels_circle_x)
     .attr("cy", labels_text_y + 18)
-    .attr("r", 4)
+    .attr("r", 3)
     .attr("stroke", "white")
     .attr("stroke-width", 0.5)
     .style("fill", selectedTrackColor);
@@ -305,7 +305,7 @@ function useData(data) {
     .append("circle")
     .attr("cx", labels_circle_x)
     .attr("cy", labels_text_y + 36)
-    .attr("r", 4)
+    .attr("r", 3)
     .attr("stroke", primaryColor)
     .attr("stroke-width", 0.5)
     .style("fill", secondaryColor);
@@ -608,6 +608,8 @@ function useData(data) {
       .text(
         `${units[selectedCategory].format(selectedTrack[selectedCategory])}`
       );
+    tooltip.select(".density-title").text(`${selectedCategory}`);
+
   }
 
   updateSelectedCategory(selectedCategory);

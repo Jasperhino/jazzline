@@ -54,7 +54,7 @@ h3 {
 }
 
 h4 {
-  font-size: 1.3em;
+  font-size: 1.24em;
   font-weight: 800;
   margin: 0px;
   margin-top: 5px;
@@ -92,7 +92,7 @@ p {
   top: 180px;
   width: 190px;
   background-color: rgba(230, 232, 230, 0.90);
-  padding: 24px 24px 28px 20px;
+  padding: 24px 24px 22px 20px;
   border-radius: 5px;
   box-shadow: rgb(74 74 74 / 13%) 1px 2px 5px 1px;
   border: 1px solid var(--text-color);
@@ -122,7 +122,7 @@ p {
 #label {
   font-size: 1em;
   letter-spacing: 0.2px;
-  margin-bottom: 5px;
+  /* margin-bottom: 5px; */
   margin-left: 24px;
   font-weight: 600;
   text-transform: uppercase;
@@ -192,7 +192,7 @@ audio {
 }
 
 #col1 {
-  margin-right: 20px;
+  /* margin-right: 20px; */
   width: 150px;
 }
 
