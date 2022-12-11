@@ -97,7 +97,7 @@ function useData(data) {
   const selectedTrackColor = "#0aa72c";
 
   let selectedCategory = "tempo";
-  let selectedTrack = data.find((d) => d.id === "6YIp0sZ8Ykgt7bzHO62KTb");
+  let selectedTrack = data.find((d) => d.id === "1bS0Bo2maVV15Fx4rLWlTE");
 
   // Window size math
   const height = window.innerHeight;
@@ -161,7 +161,7 @@ function useData(data) {
     .attr("transform", `translate(20, 0)`);
 
   const tooltip = d3
-    .select("body")
+    .select("#track-info-wrapper")
     .append("div")
     .attr("class", "track-info")
     .style("position", "fixed")
@@ -211,8 +211,6 @@ function useData(data) {
   const density_width = 210 - margin.left - margin.right;
   const density_height = 60 - margin.top - margin.bottom;
   const cursor_width = 3;
-
-
 
 
   const density_plot = d3
