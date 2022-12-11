@@ -90,18 +90,18 @@ p {
   position: fixed;
   left: 15px;
   top: 200px;
-  width: 175px;
-  background-color: rgba(230, 232, 230, 0.76);
-  padding: 26px 8px 22px 22px;
+  width: 190px;
+  background-color: rgba(230, 232, 230, 0.90);
+  padding: 31px 0px 24px 26px;
   border-radius: 4px;
   box-shadow: rgb(74 74 74 / 13%) 1px 2px 5px 1px;
-  border: 1px solid rgb(230, 232, 230);
+  border: 1px solid var(--text-color);
   flex-direction: column;
 }
 
 .btn-label {
   margin: 0;
-  margin-left: 10px;
+  margin-left: 19px;
   margin-right: 24px;
   transition: 0.3s;
 }
@@ -174,12 +174,12 @@ audio {
   background-color: #e6e8e6db;
   padding: 24px;
   padding-right: 20px;
-  border-radius: 2px;
-  box-shadow: 1px 1px 5px 2px #4a4a4a21;
   /* box-shadow: inset 1px 1px 5px 3px #4a4a4a21; */
-  border: solid;
-  border-color: #e6e8e6;
-  border-width: 1px;
+
+  background-color: rgba(230, 232, 230, 0.90);
+  border-radius: 4px;
+  box-shadow: rgb(74 74 74 / 13%) 1px 2px 5px 1px;
+  border: 1px solid var(--text-color);
 }
 
 
