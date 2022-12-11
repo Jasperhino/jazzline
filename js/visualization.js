@@ -298,7 +298,7 @@ function useData(data) {
     .attr("cx", labels_circle_x)
     .attr("cy", labels_text_y + 18)
     .attr("r", 3)
-    .attr("stroke", "white")
+    .attr("stroke", selectedTrackColor)
     .attr("stroke-width", 0.5)
     .style("fill", selectedTrackColor);
   labels
