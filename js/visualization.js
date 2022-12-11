@@ -397,9 +397,9 @@ function useData(data) {
       .style("stroke-width", "3px")
       .on("click", (e, d) => {
         selectedTrack = d;
-        const target = d3.select(e.currentTarget).style("stroke-width", "1px");
-        target.raise();
-        updateSelectedTrack(target);
+        d3.selectAll(".selected").attr("class", "dots");
+        d3.select(e.currentTarget).attr("class", "selected dots");
+        updateSelectedTrack();
       })
       .on("mouseover", (e, d) => {
         d3.select(e.currentTarget)
@@ -417,7 +417,9 @@ function useData(data) {
             selectedTrack && d.id === selectedTrack.id ? radius * 2.5 : radius
           );
       })
-      .attr("class", "dots")
+      .attr("class", (d) =>
+        d.id === selectedTrack.id ? "selected dots" : "dots"
+      )
       .transition()
       .duration(2400)
       .attr("cx", (d) => d.x)
@@ -532,15 +534,17 @@ function useData(data) {
       .attr("x", density_x(selectedTrack[selectedCategory]) - cursor_width / 2);
   }
 
-  function updateSelectedTrack(target) {
+  function updateSelectedTrack() {
     updateDots();
     updateDensityPlot();
     updateTooltip();
-    target
+
+    d3.selectAll(".selected")
       .attr("r", radius * 1.5)
       .attr("fill", primaryColor)
       .style("stroke", backgroundColor)
-      .style("stroke-width", "3px");
+      .style("stroke-width", "3px")
+      .raise();
 
     const url = `https://api.spotify.com/v1/tracks/${selectedTrack.id}`;
     fetch(url, {
@@ -581,6 +585,7 @@ function useData(data) {
   }
 
   updateSelectedCategory(selectedCategory);
+  updateSelectedTrack();
 }
 
 function participates(trackA, trackB) {
