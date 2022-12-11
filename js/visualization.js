@@ -33,7 +33,7 @@ function useData(data) {
 
   const primaryColor = "#504943";
   const highlightColor = "#8ee6a4";
-  const selectedColor = "#f7f7f7";
+  const selectedColor = "white";
 
   let selectedCategory = "tempo";
   let selectedTrack = data.find((d) => d.id === "6YIp0sZ8Ykgt7bzHO62KTb");
