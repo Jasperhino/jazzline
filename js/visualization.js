@@ -29,7 +29,7 @@ function useData(data) {
   }));
 
   const apiToken =
-    "BQAxnv1qdx3FHjskv41GKyxhXl7Gi2nctMWQsn6jioAYCOwPrRnYPb4Ai61xUmf1VdAMMTZiRSxiZNa1SL5AWwepOfrls9KL-xtG3LCrEgBvw7DKhwygFVqS7KbrWL4EVQLmA_JNLuMxiUbIT74CnBZbFAqX2mvz32yu8QmBAclf_z5BKv_3FX9qdTvmQgk";
+    "BQAoKlSVA1wgQZd4xAJepBNYWiesWKwagP0zgZLxzZlXj3NFUJvQAGFU3DAK4xxPbrC8aesIhdfc_0WW3OsFerjLyt9_d9HvylNS6Une8indZh54rwoFpgPYMl1e_AQZXgTZasoGr9zyAiGWi1LQYJYGdv7y60ioLpvocGjiZz50XKjWTAtvN8Qxx4rR4Ok";
 
   const primaryColor = "#504943";
   const highlightColor = "#8ee6a4";
@@ -42,7 +42,7 @@ function useData(data) {
   const height = window.innerHeight;
   const gap = 0.5;
   const year_gap = 3;
-  const radius = height / 340;
+  const radius = height / 350;
   const n_timebins = 100;
 
   const time_bin = d3
@@ -53,7 +53,7 @@ function useData(data) {
 
   const max_bin_size = d3.max(time_bins, (d) => d.length);
   const columns_per_bin = Math.ceil(
-    ((max_bin_size * radius * 2 + gap) / height) * 1.4
+    ((max_bin_size * radius * 2 + gap) / height) * 1.3
   );
   const width =
     time_bins.length * (columns_per_bin * (radius * 2 + gap) + year_gap);
@@ -285,7 +285,7 @@ function useData(data) {
           );
       })
       .attr("class", "dots")
-      .attr("r", (d) => applyIfSelected(selectedTrack, d, radius * 1.5, radius))
+      .attr("r", (d) => applyIfSelected(selectedTrack, d, radius * 1.3, radius))
       .style("stroke-width", (d) =>
         applyIfSelected(selectedTrack, d, "0.4", "0")
       )

@@ -89,11 +89,11 @@ p {
   display: flex;
   position: fixed;
   left: 15px;
-  top: 200px;
+  top: 180px;
   width: 180px;
   background-color: rgba(230, 232, 230, 0.90);
-  padding: 24px 0px 21px 24px;
-  border-radius: 4px;
+  padding: 15px 0px 13px 18px;
+  border-radius: 5px;
   box-shadow: rgb(74 74 74 / 13%) 1px 2px 5px 1px;
   border: 1px solid var(--text-color);
   flex-direction: column;
@@ -114,18 +114,19 @@ p {
 }
 
 #label {
-  font-size: 1.1em;
+  font-size: 1em;
+  letter-spacing: 0.2px;
   margin-bottom: 18px;
-  margin-left: 26px;
+  margin-left: 24px;
   font-weight: 600;
   text-transform: uppercase;
 }
 
 .btn {
-  font-size: 1.3em;
+  font-size: 1.1em;
   display: flex;
   flex-direction: row;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .cb {
@@ -246,9 +247,9 @@ input[type="radio"] {
   outline: none;
   -moz-appearance: none;
   -webkit-appearance: none;
-  width: 9px;
-  height: 9px;
-  margin-top: 10px;
+  width: 8px;
+  height: 8px;
+  margin-top: 7px;
 }
 
 input[type="radio"]:checked {
@@ -317,7 +318,7 @@ strong {
 
 a {
   text-decoration: none;
-  color: var(--text-color);
+  color: var(--primary-color);
   transition: 0.3s;
 }
 
