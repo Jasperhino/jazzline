@@ -50,14 +50,14 @@ h3 {
   font-size: 1.2em;
   font-weight: 300;
   margin: 0px;
-  margin-top: 7px;
+  margin-top: 5px;
 }
 
 h4 {
   font-size: 1.3em;
   font-weight: 800;
   margin: 0px;
-  margin-top: 8px;
+  margin-top: 5px;
 }
 
 h5 {
@@ -89,14 +89,20 @@ p {
   display: flex;
   position: fixed;
   left: 17px;
-  top: 210px;
-  width: 155px;
+  top: 180px;
+  width: 190px;
   background-color: rgba(230, 232, 230, 0.90);
-  padding: 15px 0px 13px 20px;
+  padding: 24px 24px 28px 20px;
   border-radius: 5px;
   box-shadow: rgb(74 74 74 / 13%) 1px 2px 5px 1px;
   border: 1px solid var(--text-color);
   flex-direction: column;
+}
+
+.description {
+  font-size: 0.95em;
+  margin-left: 27px;
+  margin-bottom: 15px;
 }
 
 .btn-label {
@@ -116,7 +122,7 @@ p {
 #label {
   font-size: 1em;
   letter-spacing: 0.2px;
-  margin-bottom: 18px;
+  margin-bottom: 5px;
   margin-left: 24px;
   font-weight: 600;
   text-transform: uppercase;
@@ -126,7 +132,8 @@ p {
   font-size: 1.1em;
   display: flex;
   flex-direction: row;
-  margin-bottom: 12px;
+  margin-bottom: 5px;
+  margin-top: 15px;
 }
 
 .cb {
@@ -148,7 +155,7 @@ p {
 }
 
 #tt-activecat {
-  margin-top: 34px;
+  margin-top: 20px;
   font-size: 0.9em;
   font-weight: 500;
   text-transform: uppercase;
@@ -168,12 +175,13 @@ audio {
 
 .track-info {
   position: fixed;
-  width: 800px;
+  width: 660px;
   right: 20px;
   top: 25px;
   display: flex;
   background-color: #e6e8e6db;
   padding: 24px;
+  padding-bottom: 10px;
   padding-right: 20px;
   /* box-shadow: inset 1px 1px 5px 3px #4a4a4a21; */
 
@@ -189,18 +197,25 @@ audio {
 }
 
 #col2 {
-  width: 450px;
-  padding-right: 10px;
+  width: 250px;
+  padding-right: 30px;
 }
 
 img {
   border-radius: 3px;
 }
 
-.density-labels {
+.density-title {
   font-size: 0.9em;
-  font-weight: 700;
-  letter-spacing: 0.1px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.density-labels {
+  font-size: 0.85em;
+  font-weight: 500;
+  letter-spacing: 0.0px;
+  text-transform: capitalize;
 }
 
 /* Scroll bar */
