@@ -37,7 +37,7 @@ d3.csv("data/tracks_filtered_jazz.csv", (t) => {
   });
 }).then(useData);
 
-const roundPercentage = (d) => Math.round(d * 100).toFixed(2);
+const roundPercentage = (d) => Math.round(d * 100).toFixed(1);
 const units = {
   tempo: {
     unit: "bpm",
@@ -434,35 +434,18 @@ function useData(data) {
       );
 
     const values = data.map((d) => d[selectedCategory]);
-    const max = d3.max(values);
-    const scale = d3.scaleLinear().domain([0, max]).range([0, 1]);
-    const scaledValues = values.map((d) => scale(d));
-    console.log("values", values);
-    console.log("scaledValues", scaledValues);
 
-    const kernel = Math.floor(values.length / 1000) * 2 + 1;
-    const t = 50; //Math.floor(values.length / 1000);
-    console.log("kernel", kernel);
-    console.log("ticks", t);
     const kde = kernelDensityEstimator(
-      kernelEpanechnikov(kernel),
-      density_x.ticks(t)
+      kernelEpanechnikov(7),
+      density_x.ticks(50)
     );
-    const density = kde(scaledValues);
+    const density = kde(values);
 
     const valuesArtist = data
       .filter((d) => participates(d, selectedTrack))
-      .map((d) => scale(d[selectedCategory]));
-    const kernel_artist = Math.floor(valuesArtist.length / 10) * 2 + 1;
-    const t_artits = t; //Math.floor(valuesArtist.length / 1000);
-    console.log("kernel_artist", kernel_artist);
-    console.log("ticks_artist", t_artits);
-    const kdeArtist = kernelDensityEstimator(
-      kernelEpanechnikov(kernel_artist),
-      density_x.ticks(t_artits)
-    );
+      .map((d) => d[selectedCategory]);
 
-    const density_artist = kdeArtist(valuesArtist);
+    const density_artist = kde(valuesArtist);
 
     console.log("selectedTracks", valuesArtist);
     console.log("artist density", density_artist);
