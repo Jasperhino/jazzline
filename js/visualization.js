@@ -483,18 +483,6 @@ function participates(trackA, trackB) {
   );
 }
 
-function applyIfSelected(
-  selectedTrack,
-  currentTrack,
-  selectedValue,
-  defaultValue
-) {
-  if (participates(selectedTrack, currentTrack)) {
-    return selectedValue;
-  }
-  return defaultValue;
-}
-
 function kernelDensityEstimator(kernel, X) {
   return function (V) {
     return X.map(function (x) {
