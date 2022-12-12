@@ -17,7 +17,7 @@ body {
 
 #fixed-container {
   background-color: var(--bg-color);
-  padding-left: 200px;
+  padding-left: 220px;
   /*viz is inside fixed-container > scrollable > viz */
 }
 
@@ -201,7 +201,7 @@ audio::-webkit-media-controls-panel {
   /* bottom: 0; */
   /* display: flex; */
   background-color: var(--bg2color);
-  padding: 20px 124px 20px 30px;
+  padding: 34px 124px 20px 30px;
   /* box-shadow: inset 1px 1px 5px 3px #4a4a4a21; */
   /* border-radius: 10px; */
   box-shadow: rgb(189 172 157 / 25%) 1px 2px 5px 1px;
@@ -213,15 +213,15 @@ audio::-webkit-media-controls-panel {
 
 .track-info {
   margin-bottom: 50px;
-  height: 95%;
+  height: 94%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
 #track-img {
-  width: 222px;
-  height: 222px;
+  width: 224px;
+  height: 224px;
   padding:4px;
 }
 

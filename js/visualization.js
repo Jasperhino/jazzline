@@ -103,7 +103,7 @@ function useData(data) {
   const height = window.innerHeight;
   const gap = 0.5;
   const year_gap = 3;
-  const radius = height / 300;
+  const radius = height / 325;
 
   // 5: radius = height / 510;
   // 6: radius = height / 420;
@@ -384,6 +384,7 @@ function useData(data) {
       );
     });
 
+    ////
     console.log(`resorted by ${selectedCategory}`, tracks_by_year);
 
     const year_bins = data_g
@@ -637,3 +638,4 @@ function kernelEpanechnikov(k) {
     return Math.abs((v /= k)) <= 1 ? (0.75 * (1 - v * v)) / k : 0;
   };
 }
+  
