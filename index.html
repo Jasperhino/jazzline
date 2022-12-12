@@ -38,7 +38,7 @@
       <div>
         <label class="btn btn-secondary active">
           <input class="cb" type="radio" name="features" value="tempo" checked />
-          <p class="btn-label">Tempo</p><br />
+          <p class="btn-label" id="btn-tempo">Tempo</p><br />
         </label>
         <div class="description" id="tempo">Estimated tempo of a track in beats per minute.</div>
       </div>
@@ -46,7 +46,7 @@
 
         <label class="btn btn-secondary">
           <input class="cb" type="radio" name="features" value="valence" />
-          <p class="btn-label">Valence</p><br />
+          <p class="btn-label" id="btn-valence">Valence</p><br />
         </label>
         <div class="description" id="valence">Tracks with high valence sound more positive (happy, euphoric).</div>
       </div>
@@ -54,7 +54,7 @@
 
         <label class="btn btn-secondary">
           <input class="cb" type="radio" name="features" value="energy" />
-          <p class="btn-label">Energy</p><br />
+          <p class="btn-label" id="btn-energy">Energy</p><br />
         </label>
         <div class="description" id="energy">Perceptual measure of intensity and activity.</div>
       </div>
@@ -63,7 +63,7 @@
 
         <label class="btn btn-secondary">
           <input class="cb" type="radio" name="features" value="acousticness" />
-          <p class="btn-label">Acousticness</p><br />
+          <p class="btn-label" id="btn-acousticness">Acousticness</p><br />
         </label>
         <div class="description" id="acousticness" >100% represents high confidence the track is acoustic.</div>
       </div>
@@ -71,20 +71,20 @@
 
         <label class="btn btn-secondary">
           <input class="cb" type="radio" name="features" value="danceability" />
-          <p class="btn-label">Danceability</p><br />
+          <p class="btn-label" id="btn-danceability">Danceability</p><br />
         </label>
         <div class="description" id="danceability">From least danceable to most danceable.</div>
       </div>
       <div>
         <label class="btn btn-secondary">
           <input class="cb" type="radio" name="features" value="loudness" />
-          <p class="btn-label">Loudness</p><br />
+          <p class="btn-label" id="btn-loudness">Loudness</p><br />
         </label>
         <div class="description" id="loudness">The overall loudness of a track in decibels (dB).</div>
       </div>
     </div>
   </form>
-  
+
   <div id="col-left">
     <div>
       <h1 id="logo" onclick="openPopup()"><i>Jazzline</i></h1>

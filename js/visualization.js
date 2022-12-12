@@ -90,7 +90,7 @@ function useData(data) {
   }));
 
   const apiToken =
-    "BQD1GNEugT7n4xZq-OGXL2JUim6Zb0WM6Anz9448yo9kBfdx_2LVS1uNlaum3fy6NMHcdIeuFkCTYJZGpStCrr0NdFBwkyKpFlRBPXVLZd9SH5nmMKgeN0-HUcT6_xLSBPBPurwFHFgasDGwavBVp-ln6ou6NLij9xOp6gOzfY9CkiIGwny_bdmLelRyRzI";
+    "BQBKfWzTqoWDlEaugrU86_Dc1l7o4fatSYFz4D9Lv5sK1YWgwsNoGTV64Dzm5vaKtR77bake73fZRaif2mZr8ReG3zwPFGxc9_99VmVfynIv2_-p6N0gNZhLCy7NizU5S0gcxpuXlDvHJ_mFKNXSg4waApU19aViU5jojeXwvwGNUhB61nda7ByZQXpirIU";
   const backgroundColor = "#504943";
   const primaryColor = "#34ad5c";
   const secondaryColor = "#8ee6a4";
@@ -103,7 +103,18 @@ function useData(data) {
   const height = window.innerHeight;
   const gap = 0.5;
   const year_gap = 3;
-  const radius = height / 340;
+  const radius = height / 300;
+
+  // 5: radius = height / 510;
+  // 6: radius = height / 420;
+  // 7: radius = height / 375;
+  // 8: radius = height / 325;
+  // 9: radius = height / 300;
+  // 10: radius = height / 275;
+  // 11: radius = height / 250;
+  // 12: radius = height / 225;
+  // 13: radius = height / 200;
+
   const n_timebins = 100;
 
   const time_bin = d3
@@ -154,10 +165,10 @@ function useData(data) {
     .select("body")
     .select("#scrollable")
     .append("svg")
-    .attr("width", width + 50)
+    .attr("width", width + 70)
     .attr("height", height)
     .attr("id", "viz")
-    .attr("viewBox", [0, 0, width, height])
+    .attr("viewBox", [0, 0, width + 350, height])
     .attr("transform", `translate(20, 0)`);
 
   const tooltip = d3
@@ -182,11 +193,11 @@ function useData(data) {
 
   const url = `https://api.spotify.com/v1/tracks/${selectedTrack.id}`;
   fetch(url, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${apiToken}`,
-    },
-  })
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+      },
+    })
     .then((response) => response.json())
     .then((data) => {
       const cover = data.album.images[0].url;
@@ -196,10 +207,11 @@ function useData(data) {
       tooltip_audio.attr("src", preview).attr("type", "audio/mpeg");
     });
 
+    tooltip_g0.append("h5").attr("id", "tt-year").text("Year");
+    tooltip_g0.append("h4").attr("id", "tt-artist").text("Artist");
+    tooltip_g0.append("h3").attr("id", "tt-track").text("Title");
+
   const tooltip_g = tooltip.append("div").attr("id", "col2");
-  tooltip_g.append("h5").attr("id", "tt-year").text("Year");
-  tooltip_g.append("h4").attr("id", "tt-artist").text("Artist");
-  tooltip_g.append("h3").attr("id", "tt-track").text("Title");
   tooltip_g.append("p").attr("id", "tt-activecat").text("Selected Category");
   tooltip_g
     .append("p")
@@ -207,14 +219,19 @@ function useData(data) {
     .text("Selected Category Value");
 
   //Density plot
-  const margin = { top: 0, bottom: 0, left: 10, right: 10 };
+  const margin = {
+    top: 0,
+    bottom: 0,
+    left: 10,
+    right: 10
+  };
   const density_width = 240 - margin.left - margin.right;
   const density_height = 70 - margin.top - margin.bottom;
   const cursor_width = 3;
 
 
   const density_plot = d3
-    .select(".track-info")
+    .select("#col2")
     .append("svg")
     .attr("width", density_width + margin.left + margin.right + 3)
     .attr("height", density_height + margin.top + margin.bottom + 60);
@@ -301,8 +318,8 @@ function useData(data) {
     .attr("stroke", primaryColor)
     .attr("stroke-width", 0.5)
     .style("fill", secondaryColor);
-    labels
-  .append("circle")
+  labels
+    .append("circle")
     .attr("cx", labels_circle_x + 160)
     .attr("cy", labels_text_y + 0)
     .attr("r", 3)
@@ -383,11 +400,11 @@ function useData(data) {
       .selectAll(".dots")
       .data(
         (d) =>
-          d.tracks.map((t, i) => ({
-            ...t,
-            x: (i % columns_per_bin) * (radius * 2 + gap) + radius,
-            y: -Math.floor(i / columns_per_bin) * (radius * 2 + gap) + radius,
-          })),
+        d.tracks.map((t, i) => ({
+          ...t,
+          x: (i % columns_per_bin) * (radius * 2 + gap) + radius,
+          y: -Math.floor(i / columns_per_bin) * (radius * 2 + gap) + radius,
+        })),
         (t) => t.id
       )
       .join("circle")
@@ -427,6 +444,7 @@ function useData(data) {
 
     updateDots();
 
+
     [
       "tempo",
       "valence",
@@ -435,9 +453,14 @@ function useData(data) {
       "danceability",
       "loudness",
     ].forEach((category) => {
+      //To show description when redio button is selected
       document.getElementById(category).style.display =
         category === selectedCategory ? "block " : "none";
+      //To add color when radio buttons is selected
+      document.getElementById("btn-" + category).style.color =
+        category === selectedCategory ? "var(--primary-color)" : "var(--text-color)";
     });
+
   }
 
   function updateDots() {
@@ -463,9 +486,9 @@ function useData(data) {
       .attr("transform", `translate(0, ${density_height})`)
       .call(
         d3
-          .axisBottom(density_x)
-          .ticks(5)
-          .tickFormat(units[selectedCategory].tickFormat)
+        .axisBottom(density_x)
+        .ticks(5)
+        .tickFormat(units[selectedCategory].tickFormat)
       );
 
     const values = data.map((d) => d[selectedCategory]);
@@ -509,11 +532,11 @@ function useData(data) {
       .attr(
         "d",
         d3
-          .area()
-          .curve(d3.curveBasis)
-          .x((d) => density_x(d[0]))
-          .y0(density_height)
-          .y1((d) => density_y(d[1]))
+        .area()
+        .curve(d3.curveBasis)
+        .x((d) => density_x(d[0]))
+        .y0(density_height)
+        .y1((d) => density_y(d[1]))
       );
 
     density_plot
@@ -522,11 +545,11 @@ function useData(data) {
       .attr(
         "d",
         d3
-          .area()
-          .curve(d3.curveBasis)
-          .x((d) => density_x(d[0]))
-          .y0(density_height)
-          .y1((d) => density_artist_y(d[1]))
+        .area()
+        .curve(d3.curveBasis)
+        .x((d) => density_x(d[0]))
+        .y0(density_height)
+        .y1((d) => density_artist_y(d[1]))
       );
 
     density_plot
@@ -548,11 +571,11 @@ function useData(data) {
 
     const url = `https://api.spotify.com/v1/tracks/${selectedTrack.id}`;
     fetch(url, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${apiToken}`,
-      },
-    })
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${apiToken}`,
+        },
+      })
       .then((response) => response.json())
       .then((data) => {
         const cover = data.album.images[0].url;
@@ -571,7 +594,7 @@ function useData(data) {
   }
 
   function updateTooltip() {
-    tooltip.transition().duration(200).style("display", "block");
+    tooltip.transition().duration(200).style("display", "flex");
     tooltip.select("#tt-year").text(`${selectedTrack.year}`);
     tooltip.select("#tt-artist").text(`${selectedTrack.artists.join(", ")}`);
     tooltip.select("#tt-track").text(`${selectedTrack.name}`);

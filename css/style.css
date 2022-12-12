@@ -17,7 +17,7 @@ body {
 
 #fixed-container {
   background-color: var(--bg-color);
-
+  padding-left: 200px;
   /*viz is inside fixed-container > scrollable > viz */
 }
 
@@ -42,7 +42,7 @@ h5 {
 }
 
 h1 {
-  font-size: 2.7em;
+  font-size: 2.5em;
   font-weight: 800;
   cursor: pointer;
   transition: 0.3s;
@@ -51,7 +51,7 @@ h1 {
 }
 
 #logo:hover {
-  letter-spacing: 0.6px;
+  letter-spacing: -0.3px;
 }
 
 h3 {
@@ -99,9 +99,9 @@ p {
   left: -31px;
   bottom: -4vh;
   height: 99vh;
-  width: 165px;
+  width: 155px;
   background-color: var(--bg2color);
-  padding: 30px 25px 55px 44px;
+  padding: 30px 30px 240px 55px;
   /* border-radius: 10px; */
   box-shadow: rgb(74 74 74 / 13%) 1px 2px 5px 1px;
   /* border: 1px solid var(--text-color); */
@@ -131,11 +131,11 @@ p {
 }
 
 #label {
-  font-size: 1em;
+  font-size: 1.01em;
   letter-spacing: 0.1px;
   margin-bottom: 5px;
   margin-left: 24px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
 }
 
@@ -144,7 +144,7 @@ p {
   display: flex;
   flex-direction: row;
   margin-bottom: 5px;
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .cb {
@@ -195,35 +195,39 @@ audio::-webkit-media-controls-panel {
 #track-info-wrapper {
   position: fixed;
   width: 230px;
-  height: 94vh;
+  height: 100%;
   right: -90px;
-  top: -1px;
+  top: 0px;
   /* bottom: 0; */
-  display: flex;
+  /* display: flex; */
   background-color: var(--bg2color);
-  padding: 20px 124px 20px 24px;
+  padding: 20px 124px 20px 30px;
   /* box-shadow: inset 1px 1px 5px 3px #4a4a4a21; */
   /* border-radius: 10px; */
-  box-shadow: rgb(74 74 74 / 13%) 1px 2px 5px 1px;
+  box-shadow: rgb(189 172 157 / 25%) 1px 2px 5px 1px;
   /* border: 1px solid var(--text-color); */
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-between;
 }
 
 .track-info {
-
+  margin-bottom: 50px;
+  height: 95%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 #track-img {
-  width: 230px;
-  height: 230px;
-  padding:2px;
+  width: 222px;
+  height: 222px;
+  padding:4px;
 }
 
 #col1 {
   /* margin-right: 20px; */
-  width: 150px;
+  padding-right: 40px;
 }
 
 #col2 {
@@ -252,7 +256,7 @@ img {
 
 /* width */
 ::-webkit-scrollbar {
-  height: 7px;
+  height: 10px;
 }
 
 /* Track */
