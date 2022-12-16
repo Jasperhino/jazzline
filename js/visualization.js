@@ -1,5 +1,25 @@
 import humanizeDuration from "https://cdn.skypack.dev/humanize-duration";
 
+const apiToken =
+  "BQD1GNEugT7n4xZq-OGXL2JUim6Zb0WM6Anz9448yo9kBfdx_2LVS1uNlaum3fy6NMHcdIeuFkCTYJZGpStCrr0NdFBwkyKpFlRBPXVLZd9SH5nmMKgeN0-HUcT6_xLSBPBPurwFHFgasDGwavBVp-ln6ou6NLij9xOp6gOzfY9CkiIGwny_bdmLelRyRzI";
+
+d3.csv("data/tracks_filtered_jazz.csv", (t) => {
+  return d3.autoType({
+    id: t.id,
+    artists: t.artists,
+    id_artists: t.id_artists,
+    name: t.name,
+    year: t.year,
+    tempo: t.tempo,
+    duration: t.duration_ms,
+    loudness: t.loudness,
+    energy: t.energy,
+    valence: t.valence,
+    acousticness: t.acousticness,
+    danceability: t.danceability,
+  });
+}).then(useData);
+
 const human = humanizeDuration.humanizer({
   language: "shortEn",
   languages: {
@@ -19,23 +39,6 @@ const human = humanizeDuration.humanizer({
   serialCOMMA: false,
   spacer: "",
 });
-
-d3.csv("data/tracks_filtered_jazz.csv", (t) => {
-  return d3.autoType({
-    id: t.id,
-    artists: t.artists,
-    id_artists: t.id_artists,
-    name: t.name,
-    year: t.year,
-    tempo: t.tempo,
-    duration: t.duration_ms,
-    loudness: t.loudness,
-    energy: t.energy,
-    valence: t.valence,
-    acousticness: t.acousticness,
-    danceability: t.danceability,
-  });
-}).then(useData);
 
 const roundPercentage = (d) => Math.round(d * 100).toFixed(1);
 const units = {
@@ -89,8 +92,6 @@ function useData(data) {
       .map((a) => a.slice(1, -1)),
   }));
 
-  const apiToken =
-    "BQBehbu17aCCVWllyjWkd_lN5dyuXJhgiwnyVcu2JQJlBxiHG5Gj7TCJbpQYw_UaV7SHcxAYBI6sctuL0WX3jQOKPpsXILWLJZzy69w0NSpYRrLZUs5n-za2mNMdR3dulRLbu3RniInOLIigN-aQgboJi6MasvRwuO058jRkhyKaJheglmHPLAsEeZgCIIs";
   const backgroundColor = "#504943";
   const primaryColor = "#34ad5c";
   const secondaryColor = "#8ee6a4";
@@ -228,7 +229,6 @@ function useData(data) {
   const density_height = 70 - margin.top - margin.bottom;
   const cursor_width = 3;
 
-
   const density_plot = d3
     .select("#col2")
     .append("svg")
@@ -296,13 +296,6 @@ function useData(data) {
   const labels_text_x = 20;
   const labels_text_y = 105;
 
-  // labels
-  //   .append("text")
-  //   .attr("x", labels_text_x - 15)
-  //   .attr("y", 7)
-  //   .text(selectedCategory) // title of density plot
-  //   .attr("class", "density-title")
-  //   .attr("alignment-baseline", "middle");
   labels
     .append("circle")
     .attr("cx", labels_circle_x)
@@ -464,13 +457,30 @@ function useData(data) {
   }
 
   function updateDots() {
+    const opacityScale = d3
+      .scaleLinear()
+      .domain(d3.extent(data, (d) => d[selectedCategory]))
+      .range([0, 1]);
+
+    const color = d3.color("green");
+
+    const sequential = d3
+      .scaleSequential()
+      .domain(d3.extent(data, (d) => d[selectedCategory]))
+      .interpolator(d3.interpolateGreens);
+
     d3.selectAll(".dots")
       .attr("r", (d) =>
         participates(d, selectedTrack) ? radius * 1.2 : radius
       )
       .style("stroke-width", (d) => (participates(d, selectedTrack) ? 0.5 : 0))
       .attr("fill", (d) =>
-        participates(d, selectedTrack) ? secondaryColor : backgroundColor
+        participates(d, selectedTrack)
+          ? //sequential(d[selectedCategory])
+            color
+              .copy({ opacity: opacityScale(d[selectedCategory]) })
+              .toString()
+          : backgroundColor
       )
       .style("stroke", (d) => primaryColor);
   }
