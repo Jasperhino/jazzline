@@ -1,7 +1,7 @@
 import humanizeDuration from "https://cdn.skypack.dev/humanize-duration";
 
 const apiToken =
-  "BQD1GNEugT7n4xZq-OGXL2JUim6Zb0WM6Anz9448yo9kBfdx_2LVS1uNlaum3fy6NMHcdIeuFkCTYJZGpStCrr0NdFBwkyKpFlRBPXVLZd9SH5nmMKgeN0-HUcT6_xLSBPBPurwFHFgasDGwavBVp-ln6ou6NLij9xOp6gOzfY9CkiIGwny_bdmLelRyRzI";
+  "BQBSjFJX1yUxhhgTeD0LWPxqi0Mas_rg5CzjyPIYmhaZSGHZ9lA4p1nfBbfVxaHZT8T6JfIbw1yfI-654ZYphPm5r-bFBnb52zdWTB0CJ2oK1i4OU-7kITfpeKaLctmwR1qHocVTdYV_zQq-Rt_Qyuvvwit9tM36obLOylzi0BtNtnsU3BEOgRp_AF26sHY";
 
 d3.csv("data/tracks_filtered_jazz.csv", (t) => {
   return d3.autoType({
@@ -460,9 +460,9 @@ function useData(data) {
     const opacityScale = d3
       .scaleLinear()
       .domain(d3.extent(data, (d) => d[selectedCategory]))
-      .range([0, 1]);
+      .range([0.1, 1]);
 
-    const color = d3.color("green");
+    const color = d3.color(primaryColor);
 
     const sequential = d3
       .scaleSequential()
